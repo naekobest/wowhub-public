@@ -30,6 +30,7 @@ Mechanics that directly affect raid performance if missed.
 - **Armor debuff uptime**: Sunder Armor / Expose Armor coverage by tanks
 - **Boss debuffs**: Curse of Recklessness, Curse of Elements, Faerie Fire uptime
 - **Death analysis**: avoidable vs. unavoidable, per boss, per player
+- **Ignite munging**: detects dropped Ignite rolling combos for fire mages — flags cases where a mage broke the chain before the 2.15 s window elapsed
 
 ### Preparation
 
@@ -45,8 +46,8 @@ What players bring to the raid before the first pull.
 
 How effectively players use their toolkit during combat.
 
-- **DPS / HPS**: benchmarked against role and spec, not raw meters
-- **Damage taken**: avoidable damage flagged per player per mechanic
+- **DPS / HPS**: tracked per player across three segments — trash pulls, boss fights, and full clear total
+- **Damage taken**: total damage per player broken down by trash, boss, and full clear; avoidable classification planned
 - **Engineering**: Goblin Sapper, grenades, on use trinkets tracked
 - **Trinket usage**: on cooldown usage rate for major DPS/healing trinkets
 - **Drums of Battle**: coverage and overlap analysis for Leatherworkers
