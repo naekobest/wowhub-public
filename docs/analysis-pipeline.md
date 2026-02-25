@@ -26,12 +26,12 @@ WCL queries are tiered by cost:
 Fight list, actor roster, zone/expansion info, current API budget. Always fetched first.
 
 **Tier 2: Aggregated Tables (medium, 1 to 2 requests)**
-Pre-computed server-side summaries: damage done, healing, damage taken, deaths, buff uptimes, player gear/talents. Covers most Performance and Overview services without touching raw events.
+Pre-computed server side summaries: damage done, healing, damage taken, deaths, buff uptimes, player gear/talents. Covers most Performance and Overview services without touching raw events.
 
 **Tier 3: Raw Events (expensive, N requests)**
-Spell-level event streams filtered by ability ID or event type. Only fetched when a service explicitly requires it. Examples include interrupt events, world buff combatant info, and armor debuff application/removal events.
+Spell-level event streams filtered by ability ID or event type. Only fetched when a service explicitly requires it. Examples include interrupt events, world buff combatant info, and armor debuff application and removal events.
 
-The budget is re-checked between Tier 2 and Tier 3. If the app budget has been depleted by other concurrent jobs, Tier 3 queries are deferred.
+The budget is rechecked between Tier 2 and Tier 3. If the app budget has been depleted by other concurrent jobs, Tier 3 queries are deferred.
 
 ## Analysis Service Interface
 
@@ -74,7 +74,7 @@ Analysis results are stored in four scoped tables:
 | Per player (raid) | `player_analysis_results` | `raid_id + player_id` |
 | Per boss + player | `boss_player_analysis_results` | `raid_boss_id + player_id` |
 
-Results are written once and re-submitting the same report is a no-op. The `data` column is JSONB, which allows each service to store whatever structure it needs without requiring migrations when services evolve.
+Results are written once and resubmitting the same report is a no-op. The `data` column is JSONB, which allows each service to store whatever structure it needs without requiring migrations when services evolve.
 
 ## ReportCard
 

@@ -1,6 +1,6 @@
 # Contributing
 
-WoW Hub's source code is closed source. This repository is a public-facing overview.
+WoW Hub's source code is closed source. This repository is a public facing overview.
 
 Community input is genuinely valuable, particularly for:
 
@@ -37,6 +37,6 @@ If you want to advocate for a specific expansion, open an issue with the `expans
 
 - Which expansion or game version
 - What the most impactful analysis checks would be for that meta
-- Any expansion-specific mechanics that don't exist in other versions
+- Any expansion specific mechanics that don't exist in other versions
 
 Expansions with the most community interest get prioritized.

@@ -14,7 +14,7 @@ No spreadsheets. No manual log scrubbing. Submit a WCL URL, wait a few seconds, 
 WarcraftLogs is excellent for raw data: damage meters, cast timelines, event logs. What it doesn't do is tell you *what matters* and *who's responsible*. WoW Hub answers:
 
 - Did your tanks keep Sunder/Expose Armor at full stacks all fight?
-- Which healers were world-buffed, which weren't?
+- Which healers were world buffed, which weren't?
 - Who used their engineering items on cooldown?
 - Are your DPS players running the right resistance gear?
 
@@ -39,7 +39,7 @@ What players bring to the raid before the first pull.
 - **Consumables**: flasks, elixirs, food buffs per player and role
 - **Gear quality**: enchants, gems, item level relative to content
 - **Professions**: relevant crafted gear and engineering presence
-- **Resistance gear**: correct sets equipped for resistance-check fights
+- **Resistance gear**: correct sets equipped for resistance check fights
 
 ### Performance
 
@@ -47,8 +47,8 @@ How effectively players use their toolkit during combat.
 
 - **DPS / HPS**: benchmarked against role and spec, not raw meters
 - **Damage taken**: avoidable damage flagged per player per mechanic
-- **Engineering**: Goblin Sapper, grenades, on-use trinkets tracked
-- **Trinket usage**: on-cooldown usage rate for major DPS/healing trinkets
+- **Engineering**: Goblin Sapper, grenades, on use trinkets tracked
+- **Trinket usage**: on cooldown usage rate for major DPS/healing trinkets
 - **Drums of Battle**: coverage and overlap analysis for Leatherworkers
 
 ### Buffs
@@ -80,7 +80,7 @@ An overall raid score is calculated from a weighted average across all four cate
 |-------|-----------|
 | Backend | Laravel 12, PHP 8.4 |
 | Frontend | React 19, Inertia.js v2, TypeScript |
-| Database | PostgreSQL (LIST-partitioned by expansion) |
+| Database | PostgreSQL (partitioned by expansion) |
 | Queue | Redis + Laravel Horizon |
 | Auth | WarcraftLogs OAuth 2.0 |
 | Payments | Stripe (subscription tiers) |

@@ -16,22 +16,22 @@ Classic progression servers move forward over time and WoW Hub is designed to ke
 
 ## Feature Roadmap
 
-### Near-Term (Beta to v1.0)
+### Near Term (Beta to v1.0)
 
-- **Character Profiles**: per-character history across all analyzed raids, including DPS/HPS trends, Mechanic Score, Preparation Score, and role-aware benchmarks
-- **Mobile-responsive layout**: the current UI is desktop-first
+- **Character Profiles**: per character history across all analyzed raids, including DPS/HPS trends, Mechanic Score, Preparation Score, and role aware benchmarks
+- **Mobile responsive layout**: the current UI is desktop first
 - **Discord bot**: post an analysis summary directly to your guild's Discord channel
 
-### Medium-Term
+### Medium Term
 
 - **Expanded service coverage**: additional Execution checks (kiting, soak assignments) and additional Preparation checks (raid composition analysis)
 - **Comparative reports**: a "your guild vs. last week" diff view
-- **Public leaderboards**: opt-in raid scoring by server and faction
+- **Public leaderboards**: opt in raid scoring by server and faction
 
-### Long-Term / Expansion-Dependent
+### Long Term / Expansion Dependent
 
-- **Retail support**: Mythic+ analysis, affixes, dungeon-specific mechanics
-- **API access**: for guild management tools and third-party integrations
+- **Retail support**: Mythic+ analysis, affixes, dungeon specific mechanics
+- **API access**: for guild management tools and third party integrations
 
 ## Suggesting a Feature
 
