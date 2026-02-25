@@ -30,7 +30,7 @@ Mechanics that directly affect raid performance if missed.
 - **Armor debuff uptime**: Sunder Armor / Expose Armor coverage by tanks
 - **Boss debuffs**: Curse of Recklessness, Curse of Elements, Faerie Fire uptime
 - **Death analysis**: avoidable vs. unavoidable, per boss, per player
-- **Ignite munging**: detects dropped Ignite rolling combos for fire mages — flags cases where a mage broke the chain before the 2.15 s window elapsed
+- **Ignite munching**: detects dropped Ignite rolling combos for fire mages — flags cases where a mage broke the chain before the 2.15 s window elapsed
 
 ### Preparation
 
