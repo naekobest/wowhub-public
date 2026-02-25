@@ -4,7 +4,7 @@
 
 WoW Hub is a server-rendered SPA built on **Laravel 12** (PHP 8.4) with **Inertia.js v2** and **React 19**. The backend handles all business logic, queue management, and WarcraftLogs API communication. The frontend is a TypeScript React app rendered server-side via Inertia, with no separate API, no JWT, and no state management library needed.
 
-**Database:** PostgreSQL with LIST partitioning by game version. High-volume tables (raids, players, analysis results) are partitioned per expansion, so queries for Vanilla data never touch MoP partitions and vice versa. Analysis result rows are write-once — there is no re-analysis, and submitting the same report twice is a no-op.
+**Database:** PostgreSQL with LIST partitioning by game version. High-volume tables (raids, players, analysis results) are partitioned per expansion, so queries for Vanilla data never touch MoP partitions and vice versa. Analysis result rows are written once. There is no re-analysis and submitting the same report twice is a no-op.
 
 **Auth:** WarcraftLogs OAuth 2.0 (Authorization Code + PKCE). No email/password accounts. Your WCL identity is your identity. OAuth tokens are stored encrypted at rest.
 
