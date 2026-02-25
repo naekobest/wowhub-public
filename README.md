@@ -1,11 +1,11 @@
-# WoW Analyzer
+# WoW Hub
 
 > Raid log analysis for WoW Classic — built for guild leads, powered by WarcraftLogs.
 
 [![Status](https://img.shields.io/badge/status-beta-orange)](https://github.com/naekobest/wowhub-public)
 [![Stack](https://img.shields.io/badge/stack-Laravel%2012%20%7C%20React%20%7C%20PostgreSQL-blue)](docs/architecture.md)
 
-WoW Analyzer ingests your WarcraftLogs report and runs a structured analysis pipeline across
+WoW Hub ingests your WarcraftLogs report and runs a structured analysis pipeline across
 four categories: **Execution**, **Preparation**, **Performance**, and **Buffs**. Every player
 gets scored individually. The raid gets an overall score. Results are graded on WoW's own
 quality scale — from Poor to Legendary.
@@ -18,14 +18,14 @@ breakdown.
 ## Why Not Just Use WarcraftLogs?
 
 WarcraftLogs is excellent for raw data — damage meters, cast timelines, event logs. What it
-doesn't do is tell you *what matters* and *who's responsible*. WoW Analyzer answers:
+doesn't do is tell you *what matters* and *who's responsible*. WoW Hub answers:
 
 - Did your tanks keep Sunder/Expose Armor at full stacks all fight?
 - Which healers were world-buffed, which weren't?
 - Who used their engineering items on cooldown?
 - Are your DPS players running the right resistance gear?
 
-WarcraftLogs shows you the events. WoW Analyzer scores the execution.
+WarcraftLogs shows you the events. WoW Hub scores the execution.
 
 ---
 
@@ -120,7 +120,7 @@ spell IDs, and scoring thresholds.
 
 ## Status
 
-WoW Analyzer is currently in **Beta**. Classic Vanilla is the first supported expansion.
+WoW Hub is currently in **Beta**. Classic Vanilla is the first supported expansion.
 If you want to follow development, watch this repo or join the Discord (link coming soon).
 
 ---

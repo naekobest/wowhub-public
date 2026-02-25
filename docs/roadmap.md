@@ -2,7 +2,7 @@
 
 ## Expansion Support
 
-Classic progression servers move forward over time — WoW Analyzer is designed to keep up.
+Classic progression servers move forward over time — WoW Hub is designed to keep up.
 Each expansion requires its own set of analysis services (spell IDs, thresholds, enabled checks).
 
 | Expansion | Priority | Status |

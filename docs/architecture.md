@@ -2,7 +2,7 @@
 
 ## Stack
 
-WoW Analyzer is a server-rendered SPA built on **Laravel 12** (PHP 8.4) with **Inertia.js v2**
+WoW Hub is a server-rendered SPA built on **Laravel 12** (PHP 8.4) with **Inertia.js v2**
 and **React 19**. The backend handles all business logic, queue management, and WarcraftLogs API
 communication. The frontend is a TypeScript React app rendered server-side via Inertia — no
 separate API, no JWT, no state management library needed.
@@ -37,7 +37,7 @@ paying users.
 
 ## WarcraftLogs API Budget
 
-WCL's v2 API has a per-hour point budget. WoW Analyzer manages this in three tiers:
+WCL's v2 API has a per-hour point budget. WoW Hub manages this in three tiers:
 
 1. **User has their own WCL v2 API key** → uses their own budget, dispatched to the highest
    priority queue for their subscription tier

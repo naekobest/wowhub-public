@@ -1,6 +1,6 @@
 # Contributing
 
-WoW Analyzer's source code is closed source. This repository is a public-facing overview.
+WoW Hub's source code is closed source. This repository is a public-facing overview.
 
 That said, community input is genuinely valuable — particularly for:
 
