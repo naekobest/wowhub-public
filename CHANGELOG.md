@@ -21,4 +21,6 @@
 - Report header redesigned: overall score, boss kill count, and zone name now appear as inline KPI chips without a separate summary section.
 - Sidebar navigation updated with collapsible per-raid tabs using `NavReport` — switching between Overview, Execution, Preparation, Performance, and Buffs no longer reloads the page.
 - Performance tab now renders DPS, HPS, and Damage Taken results with segment switching (trash / boss / total).
+- Execution tab now renders Ignite analysis results per player, showing combo count, longest run, and flagged broken sequences.
+- Player overview table rebuilt with shadcn Table components. Role tabs (All / Tanks / Healers / DPS) replace the previous flat/grouped toggle. A column visibility dropdown lets users hide Spec and score columns. Sort indicators reset on tab change. Skeleton rows with an amber pulse indicator display while analysis is running.
 - WCL API Key setup added to `/settings/api` with a guide and copy buttons for the required OAuth scopes.
