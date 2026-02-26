@@ -31,6 +31,7 @@ Mechanics that directly affect raid performance if missed.
 - **Boss debuffs**: Curse of Recklessness, Curse of Elements, Faerie Fire uptime
 - **Death analysis**: avoidable vs. unavoidable, per boss, per player
 - **Ignite munching**: detects dropped Ignite rolling combos for fire mages — flags cases where a mage broke the chain before the 2.15 s window elapsed
+- **Ignite griefing**: detects which mages reset another mage's active Ignite by casting their own fire spell mid-chain — per boss, with a breakdown by offender and triggering spell
 
 ### Preparation
 
@@ -46,7 +47,7 @@ What players bring to the raid before the first pull.
 
 How effectively players use their toolkit during combat.
 
-- **DPS / HPS**: tracked per player across three segments — trash pulls, boss fights, and full clear total
+- **DPS / HPS**: tracked per DPS player across three segments — trash pulls, boss fights, and full clear total; healers and tanks are excluded from DPS rankings
 - **Damage taken**: total damage per player broken down by trash, boss, and full clear; avoidable classification planned
 - **Engineering**: Goblin Sapper, grenades, on use trinkets tracked
 - **Trinket usage**: on cooldown usage rate for major DPS/healing trinkets
@@ -111,5 +112,6 @@ WoW Hub is currently in **Beta**. Classic Vanilla is the first supported expansi
 
 - [Architecture Overview](docs/architecture.md): stack, queue design, WCL API integration
 - [Analysis Pipeline](docs/analysis-pipeline.md): how the scoring engine works
+- [Analysis Services](docs/services.md): full list of implemented services with expansion support
 - [Roadmap](docs/roadmap.md): planned features and expansion timeline
 - [Contributing](CONTRIBUTING.md): how to suggest features or new analysis checks

@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-02-26
+
+### New Analysis Services
+
+- **IgniteGriefingService** — detects per boss which mages reset another mage's active Ignite by casting their own fire spell while a larger chain was in progress. Results include a breakdown by offending mage and triggering spell. Non-mages and untracked spells are excluded from output. Execution category, Vanilla Classic and Season of Discovery.
+
+### Improvements
+
+- **DpsService** is now roster-aware. Healers and tanks are excluded from DPS rankings. The service declares `needsPlayers()` in its data requirements so role assignments from the WCL combatant roster are available during analysis.
+- **GearEnchantService** gained two-handed weapon support. When the mainhand slot holds a known two-handed weapon, the offhand enchant check is skipped entirely. A new `enchantable_item_ids` filter per slot restricts enchant requirements to specific item types, so off-hand held items that cannot receive weapon enchants (books, off-hand frills) are no longer flagged as missing enchants.
+
+### Pipeline
+
+- `DataRequirements` gained a `needsPlayers()` flag. Services that need role-segmented roster data declare this flag and receive healer and tank name sets via `ReportContext`.
+
 ## 2026-02-25
 
 ### New Analysis Services

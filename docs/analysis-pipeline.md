@@ -23,7 +23,7 @@ Each analysis service declares what WCL data it needs via a `DataRequirements` v
 WCL queries are tiered by cost:
 
 **Tier 1: Metadata (cheap, 1 request)**
-Fight list, actor roster, zone/expansion info, current API budget. Always fetched first.
+Fight list, actor roster with role assignments (tank/healer/DPS), zone/expansion info, current API budget. Always fetched first. Services that need role-segmented player data (e.g. `DpsService`) declare `needsPlayers()` in their `DataRequirements` and receive healer and tank name sets via `ReportContext` without an additional API call.
 
 **Tier 2: Aggregated Tables (medium, 1 to 2 requests)**
 Pre-computed server side summaries: damage done, healing, damage taken, deaths, buff uptimes, player gear/talents. Covers most Performance and Overview services without touching raw events.
