@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-02-27
+
+### Documentation
+
+- **Analysis Services** (`docs/services.md`) fully rewritten. The previous table-based overview is replaced with detailed per-service explanations: what each service measures, why the mechanic matters, what WarcraftLogs data it consumes, and how its output feeds into scoring. The Report Card section now documents the scoring formula for each category (Execution, Preparation, Performance, Buffs), how missing data is handled via weight redistribution, and the full score-to-grade mapping table. Category weight rationale is also included.
+
 ## 2026-02-26
 
 ### New Analysis Services
