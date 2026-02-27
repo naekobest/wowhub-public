@@ -6,6 +6,8 @@ Services are registered per expansion in config. Adding a new mechanic means imp
 
 Expansion abbreviations used in this document: **V** = WoW Classic (Vanilla) and Fresh Classic, **All** = every currently supported expansion.
 
+For per-service technical documentation including scoring formulas, WCL data dependencies, and implementation notes, see [services/index.md](services/index.md).
+
 ---
 
 ## Execution
@@ -63,6 +65,28 @@ Ticks below a minimum damage threshold are excluded to filter out noise from DoT
 **Why it matters:** A well-maintained Ignite chain is one of the highest-leverage mechanics available to a fire mage group in Vanilla. Being able to show mages their personal best combo and where chains dropped gives concrete feedback.
 
 **WCL data used:** Debuff aura table for uptime (Tier 2), DamageDone events filtered to Ignite spell ID (Tier 3).
+
+### Dispels
+
+**Key:** `dispels` | **Expansions:** All
+
+Tracks successful dispels per boss fight, broken down by dispel type: Magic, Poison, Disease, and Curse. The service is class-aware — only players with a dispel-capable class (Paladin, Priest, Druid, Mage, Shaman) are counted. Unknown or pet-sourced dispel events are excluded.
+
+Classification uses per-class logic keyed on WCL event fields:
+
+- **Mage**: always Curse (Remove Curse is the only dispel available).
+- **Priest**: defaults to Magic; classified as Disease when the caster spell ID appears in the per-expansion `priest_disease_spells` config list.
+- **Paladin**: Cleanse removes Magic, Poison, and Disease. WCL dispel events expose the removed debuff's spell ID (`extraAbilityGameID`), not its school. Classification checks the removed debuff ID against per-expansion `paladin_poison_debuffs` and `paladin_disease_debuffs` lists. Unmatched debuffs default to Magic.
+- **Druid**: uses caster spell ID (`abilityGameID`) checked against the `druid_poison` config list; defaults to Curse when the list is empty or the spell is not matched (covers expansions where Remove Corruption handles both types from a single spell ID).
+- **Shaman**: uses caster spell ID matched against `shaman_poison_spells` and `shaman_disease_spells`; returns null for unrecognised spells (e.g. WotLK Cleanse Spirit, which cannot be classified from the event data alone).
+
+Per-boss results list each dispel type's total count and a sorted leaderboard of contributing players. The raid summary aggregates totals and player counts across all bosses.
+
+Dispels are currently informational and do not feed into the Execution score.
+
+**Why it matters:** Uncleared debuffs cause damage, crowd-control, or healing drain. In fights with a high dispel requirement, identifying who is not dispelling (or which type is going unhandled) tells the raid leader whether the problem is assignment or awareness.
+
+**WCL data used:** Dispel events (Tier 3).
 
 ### Ignite Griefing
 

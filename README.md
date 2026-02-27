@@ -113,5 +113,7 @@ WoW Hub is currently in **Beta**. Classic Vanilla is the first supported expansi
 - [Architecture Overview](docs/architecture.md): stack, queue design, WCL API integration
 - [Analysis Pipeline](docs/analysis-pipeline.md): how the scoring engine works
 - [Analysis Services](docs/services.md): full list of implemented services with expansion support
+- [Per-Service Documentation](docs/services/index.md): technical analysis, scoring formulas, and WCL data dependencies for each service
+- [Changelog](CHANGELOG.md): development history and recent changes
 - [Roadmap](docs/roadmap.md): planned features and expansion timeline
 - [Contributing](CONTRIBUTING.md): how to suggest features or new analysis checks

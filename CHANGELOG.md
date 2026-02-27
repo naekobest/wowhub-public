@@ -2,9 +2,31 @@
 
 ## 2026-02-27
 
+### New Analysis Services
+
+- **DispelTrackingService** — tracks successful dispels per boss fight, broken down by Magic, Poison, Disease, and Curse. Class-aware classification covers Paladin, Priest, Druid, Mage, and Shaman using per-expansion spell ID configuration. Produces a per-player leaderboard per type and a raid-wide summary. Available as informational data in the Execution section; does not affect the Execution score.
+
+### Improvements
+
+- **Ignite Griefing: stack-tracking algorithm** — replaced the previous event-window scan with a full Ignite stack state machine. Two grief phases are now distinguished: build phase (stacks 1 through 4, where any Scorch, Fire Blast, Blast Wave, or Flamestrike hit is flagged) and maintenance phase (5 stacks, where Fire Blast, Blast Wave, and Flamestrike are flagged). Fire Blast is exempted from maintenance flagging when the gap since the last fire crit exceeds 2,500 ms, meaning Scorch could not have landed in time to refresh the chain. Each grief entry records the spell, damage, resisted amount, fight offset in seconds, and phase type.
+- **Armor Debuff** — the raid summary now includes zone-grouped uptime and casts-per-minute for multi-zone raids. A bug in the WCL effective cast filter was also corrected; it had silently returned zero casts on some log formats.
+- **Query Planner** — services can now declare `needsReportWideEvents` to fetch events once for the full log rather than per boss. Trash debuff data is fetched in a separate pass for services that declare `needsTrashData`.
+
+### Infrastructure
+
+- **`WclAura` value object** — centralises normalisation of WarcraftLogs' dual-key aura field structure. The WCL aura table returns spell IDs under either `guid` or `abilityGameID` and uptime under either `uptimeMs` or `total` depending on context. `WclAura::guid()` and `WclAura::uptimeMs()` resolve the correct field transparently, replacing per-service null-check patterns across all buff and debuff services.
+- **`PlayerRole` enum** — formal type for tank, healer, and DPS role mapping with a `wclGroupKey()` method that resolves each role to its WCL `playerDetails` group key. Replaces hardcoded string arrays throughout the pipeline context hydration and analysis service layer.
+
+### Fixed
+
+- Dispel classification uses flat WCL event fields (`abilityGameID`, `extraAbilityGameID`) rather than the nested `ability.guid` object, which is absent from raw events fetched via the events API.
+- Config key corrected from `player_buff_uptime` to `player_buff_coverage` in `enabled_services`.
+- Pipeline error logging now includes the exception class and service key, making log-driven debugging faster.
+
 ### Documentation
 
 - **Analysis Services** (`docs/services.md`) fully rewritten. The previous table-based overview is replaced with detailed per-service explanations: what each service measures, why the mechanic matters, what WarcraftLogs data it consumes, and how its output feeds into scoring. The Report Card section now documents the scoring formula for each category (Execution, Preparation, Performance, Buffs), how missing data is handled via weight redistribution, and the full score-to-grade mapping table. Category weight rationale is also included.
+- Added per-service documentation files in `docs/services/` with technical analysis, scoring formulas, WCL data dependencies, and implementation notes for each analysis service.
 
 ## 2026-02-26
 
