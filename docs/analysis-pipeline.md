@@ -28,7 +28,7 @@ Fight list, actor roster with role assignments (tank/healer/DPS), zone/expansion
 **Tier 2: Aggregated Tables (medium, 1 to 2 requests)**
 Pre-computed server side summaries: damage done, healing, damage taken, deaths, buff uptimes, player gear/talents. Covers most Performance and Overview services without touching raw events.
 
-By default, Tier 2 table queries cover boss fights only. Services that need trash pull data (e.g. `DpsService`, `HealingMetricsService`, `DamageTakenService`) declare `needsTrashData` in their `DataRequirements`. The QueryPlanner issues a second pass of table queries scoped to trash fights and makes the results available via `ReportContext::getTrashFights()`. This keeps the default query count minimal while enabling full trash/boss/total segmentation for Performance services.
+By default, Tier 2 table queries cover boss fights only. Services that need trash pull data declare `needsTrashData` in their `DataRequirements`. The QueryPlanner then issues a second pass of table queries scoped to trash fights — including a dedicated buff data build for trash windows — and makes the results available via `ReportContext::getTrashFights()`. This keeps the default query count minimal while enabling full boss / trash / total segmentation across all categories (Performance, Execution, and Buffs).
 
 **Tier 3: Raw Events (expensive, N requests)**
 Spell-level event streams filtered by ability ID or event type. Only fetched when a service explicitly requires it. Examples include interrupt events, world buff combatant info, armor debuff application and removal events, and Ignite tick sequences.

@@ -22,7 +22,7 @@ Tracks the uptime of key raid debuffs on the primary boss target. In WoW Classic
 
 The service is composition-aware. Faerie Fire is only tracked when at least one Druid is in the raid. Curses scale with warlock count: one warlock unlocks Curse of Recklessness, two unlocks Curse of Elements, three unlocks Curse of Shadow. Debuffs that require a class the raid does not have are silently excluded rather than scored as zero.
 
-Each debuff is measured as a percentage of the fight duration it was active on the target. A gap classification (minor, major, critical) is derived from configurable thresholds. Per-boss results are aggregated to a raid-wide average.
+Each debuff is measured as a percentage of the fight duration it was active on the target. A gap classification (minor, major, critical) is derived from configurable thresholds. Results are segmented into boss, trash, and total scopes. Per-boss results are aggregated to a raid-wide average per scope.
 
 **Why it matters:** A raid with 50% Curse of Elements uptime is playing at a fraction of its potential damage output for fire and frost mages. Even a 10 second gap on a boss with a 3 minute enrage timer matters.
 
@@ -46,7 +46,7 @@ The service tracks both debuffs independently, calculates uptime as a fraction o
 
 Tracks the total number of successful spell interrupts per boss fight and the breakdown by player. The service does not calculate an opportunity rate because WarcraftLogs does not expose the number of interruptible cast windows in aggregated form. Instead it normalizes the total interrupt count against a configurable target per expansion and produces a leaderboard of who is carrying interrupt responsibility.
 
-Results show which players interrupted and with which abilities (Counterspell, Pummel, Shield Bash, etc.). The summary across all bosses ranks players by total interrupts.
+Results show which players interrupted and with which abilities (Counterspell, Pummel, Shield Bash, etc.), segmented by boss, trash, and total scope. The summary across all bosses ranks players by total interrupts.
 
 **Why it matters:** Some bosses have spells that must be interrupted to prevent wipes or significant healing strain. Identifying players who never interrupt is the first step toward fixing assignment coverage.
 
@@ -80,7 +80,7 @@ Classification uses per-class logic keyed on WCL event fields:
 - **Druid**: uses caster spell ID (`abilityGameID`) checked against the `druid_poison` config list; defaults to Curse when the list is empty or the spell is not matched (covers expansions where Remove Corruption handles both types from a single spell ID).
 - **Shaman**: uses caster spell ID matched against `shaman_poison_spells` and `shaman_disease_spells`; returns null for unrecognised spells (e.g. WotLK Cleanse Spirit, which cannot be classified from the event data alone).
 
-Per-boss results list each dispel type's total count and a sorted leaderboard of contributing players. The raid summary aggregates totals and player counts across all bosses.
+Per-boss results list each dispel type's total count and a sorted leaderboard of contributing players, broken down by boss, trash, and total scope. The raid summary aggregates totals and player counts across all bosses per scope.
 
 Dispels are currently informational and do not feed into the Execution score.
 
@@ -176,7 +176,7 @@ DPS and HPS numbers are informational and not currently scored. The scored Perfo
 
 Counts player deaths per boss fight and classifies each death as avoidable or unavoidable based on the killing blow ability ID. Avoidable deaths are from abilities with predictable timing or player-controlled avoidance (standing in fire, failing to move out of a cleave). Unavoidable deaths come from tank mechanics or raid-wide unavoidable damage.
 
-The service tracks the full death roster per boss and accumulates totals per player across the clear. Players with zero deaths receive a score of 100. Each avoidable death reduces the score. The zero-score threshold (where the score hits 0) is configurable per expansion.
+The service tracks the full death roster per boss and accumulates totals per player across the clear, segmented by boss, trash, and total scope. Avoidable deaths on trash pulls are always zero by design — trash deaths are classified as unavoidable since avoidable trash mechanics are not tracked. Players with zero deaths receive a score of 100. Each avoidable death reduces the score. The zero-score threshold (where the score hits 0) is configurable per expansion.
 
 Performance for the overall category is scored from avoidable deaths: 0 avoidable deaths = 100, at the threshold count the score reaches 0.
 
@@ -234,7 +234,7 @@ Measures the uptime of persistent raid buffs across all boss fights. Tracked buf
 
 **Class buffs** are buffs provided by specific classes that may not always be present. Their uptime is tracked for informational purposes but not penalized when the relevant class is absent from the raid.
 
-For each tracked buff, the service calculates uptime as a fraction of boss fight duration and the number of players affected. Per-boss results aggregate to a raid-wide average uptime for each buff, which feeds the Buffs category score.
+For each tracked buff, the service calculates uptime as a fraction of fight duration and the number of players affected, segmented by boss, trash, and total scope. Per-boss results aggregate to a raid-wide average uptime for each buff per scope. The Buffs category score is derived from the boss-scope average.
 
 **Why it matters:** Letting Blessing of Kings fall off for 30 seconds per boss fight is a preventable mistake. Buff uptime data makes it visible and attributable.
 

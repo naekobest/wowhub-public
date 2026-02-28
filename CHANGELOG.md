@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-02-28
+
+### UI
+
+- **Boss / Trash / Total scope switcher** — all analysis sections (Execution, Performance, Buffs) now have a scope toggle. Switching between Boss, Trash, and Total filters the displayed results without a page reload. The toggle is hidden for sections that only produce boss-scoped data.
+
+### Analysis Services
+
+All services that previously reported only boss-scoped results now produce three named segments — `boss`, `trash`, and `total` — so the scope switcher has data to work with across the entire report:
+
+- **DeathAnalysisService** — trash avoidable deaths are always zero by design (unavoidable by nature); this is now explicitly documented in the result structure.
+- **DebuffUptimeService** — total segment is computed via `array_merge` to correctly aggregate overlapping boss and trash windows.
+- **InterruptTrackingService** — full boss/trash/total breakdown added.
+- **DispelTrackingService** — full boss/trash/total breakdown added.
+- **RaidBuffUptimeService** — full boss/trash/total breakdown added.
+
+### Pipeline
+
+- Trash fight windows are now fetched for all services that declare `needsTrashData`, including Deaths (previously the flag was hardcoded to `false` for that fetch).
+- Buff event data is now built for trash fight windows in addition to boss fights, making buff-based services fully scope-aware.
+
+### Fixed
+
+- `needsTrashData` was ignored during the Deaths event fetch — deaths in trash pulls were missing from results.
+- `ScopeToggle` visibility is now guarded explicitly; the previous `?? false` cast could produce incorrect visibility in edge cases.
+
 ## 2026-02-27
 
 ### New Analysis Services
