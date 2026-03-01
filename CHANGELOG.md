@@ -1,5 +1,38 @@
 # Changelog
 
+## 2026-03-01
+
+### Ignite Rewrite
+
+The Ignite analysis service has been completely rewritten. The previous implementation reconstructed "combo sequences" by tracking consecutive Ignite ticks within a 2,150 ms window per source mage. The new implementation uses the WCL debuff aura band data directly: each continuous Ignite debuff period on the boss is one Ignite instance, and contributing spells are matched to each instance by timestamp overlap.
+
+This is a more accurate model. Ignite in Vanilla Classic is a shared debuff, so tracking it per source mage was misleading. The new approach tracks the debuff itself and attributes all fire crits that landed during each Ignite window, regardless of which mage cast them.
+
+Per-instance data now includes:
+- Duration and time range within the fight
+- Maximum tick damage
+- Contributing spells with caster name and individual damage
+- Total contributing damage across all casters
+
+### Ignite Grief Integration
+
+Grief detection results are now embedded directly into the Ignite view. Each Ignite instance card shows a warning badge with the grief count and an expandable detail section listing every grief event: the spell cast, the responsible player, the phase (build or maintenance), and the damage dealt.
+
+Backend changes:
+- `IgniteGriefingService` now produces a `perIgnite` field in its output, indexing griefs by debuff band number (matching the Ignite service's band indices). Each entry contains a grief count and a list of grief events with spell name, player name, damage, resisted amount, fight offset, and phase type.
+- The frontend component tree gained an `allSectionResults` prop that passes all results within a report section to each service component. The Ignite component uses this to read grief data from the `ignite_griefing` service without tight coupling between the two services.
+
+The standalone Ignite Griefing tab remains as a raid-wide overview showing total griefs per player and per-boss breakdowns. Per-instance details are now in the Ignite tab.
+
+### UI
+
+- **Collapsible accordion pattern** applied to all result components. Cards that previously rendered all detail content inline now use a collapsed header with a chevron toggle. Expanding a card reveals the detail section with a smooth CSS grid animation. This reduces visual noise on initial load while keeping all data accessible.
+
+### Documentation
+
+- Service documentation for Ignite updated to reflect the debuff-band-based approach. The "How it works" explanation in both the standalone page and the in-report help sheet now covers uptime tracking, per-instance breakdowns, and grief detection in a single view.
+- Ignite Griefing documentation updated to describe the raid-wide overview role and cross-references the Ignite tab for per-instance grief details.
+
 ## 2026-02-28
 
 ### UI

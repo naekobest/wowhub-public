@@ -9,44 +9,47 @@
 
 ## What it measures
 
-Two related dimensions of Ignite mechanics for fire mages.
+Three dimensions of Ignite mechanics for fire mage groups.
 
 ### Uptime
 
-Ignite uptime as a percentage of each boss fight's duration. This measures whether the mage group kept a fire crit landing on the target continuously enough to maintain the Ignite debuff.
+Ignite uptime as a percentage of each boss fight's duration. This measures whether the mage group kept fire crits landing on the target continuously enough to maintain the shared Ignite debuff.
 
-### Combo sequences
+### Per-instance breakdown
 
-Consecutive Ignite ticks attributed to the same source player within the 2,150 ms Ignite refresh window constitute a combo. The service reconstructs these sequences from raw DamageDone events by tracking crit timestamps. For each player and each boss, the service records:
+Each continuous Ignite debuff period on the boss is one Ignite instance. For each instance the service records:
 
-- Total number of combos
-- Longest combo duration in seconds
-- Maximum tick value in the longest combo
-- Fight offset where the longest combo started
+- Start time and end time within the fight
+- Total duration in seconds
+- Maximum tick damage observed
+- All contributing spells that landed during the Ignite window, attributed to their caster with individual damage values
+- Total contributing damage across all casters
 
-A per-player summary across the full clear reports the best combo seen overall.
+### Integrated grief detection
 
-Ticks below a minimum damage threshold are excluded to filter out noise from DoT clipping artifacts.
+Grief data from the `ignite_griefing` service is displayed inline per Ignite instance. Each instance card shows a warning badge with the grief count and an expandable detail section listing every grief event: the spell cast, the responsible player, the phase (build or maintenance), and the damage dealt. This provides full context without switching tabs.
 
 ---
 
 ## Why it matters
 
-In Vanilla Classic, Ignite is a shared debuff across all fire mages. All fire crits from all mages stack into the same Ignite debuff on the target. When a large Ignite has accumulated from several Fireball crits, maintaining that stack with precisely timed Scorch casts can sustain significantly higher damage than letting the debuff drop and restart from zero. This technique — Ignite rolling — is one of the highest-leverage mechanical skills available to a fire mage group.
+In Vanilla Classic, Ignite is a shared debuff across all fire mages. Every fire crit from every mage feeds into the same Ignite debuff on the target, stacking up to 5 times. A well-coordinated mage group keeps Ignite rolling continuously with high-value Fireball crits while using Scorch only for maintenance refreshes at 5 stacks.
 
-Showing mages their personal best combo and the precise fight offset where their chains dropped provides concrete feedback that generalised logs cannot offer.
+The per-instance breakdown shows exactly what happened during each Ignite period: which mages contributed, how much damage each spell added, and whether grief events disrupted the stack. This level of detail is not available from raw WarcraftLogs data without manual event-by-event scrubbing.
 
 ---
 
 ## WCL data used
 
-- Debuff aura table for uptime (Tier 2) — bands where Ignite was active on the target.
-- DamageDone events filtered to the Ignite spell ID (Tier 3) — individual tick events with timestamps, source player, and damage values.
+- Debuff aura table for uptime and Ignite windows (Tier 2) — time bands where the Ignite debuff was active on the target. Each band maps to one Ignite instance.
+- DamageDone events filtered to fire spell IDs (Tier 3) — individual hits with timestamps, source player, spell ID, damage, and hit type. Used to attribute contributing spells to each Ignite instance.
 
 ---
 
 ## Implementation notes
 
-The 2,150 ms window is derived from the Vanilla game engine: Ignite ticks every 2 seconds, and a new fire crit must land before the 2-second window plus a small buffer. A strict window without the buffer would incorrectly split combos due to server-side tick timing variance.
+The service uses the WCL debuff band data directly rather than reconstructing Ignite windows from damage events. Each `band` in the WCL aura response represents one continuous period where the Ignite debuff was active. Contributing spells are matched to bands by timestamp overlap.
 
-Combo reconstruction processes events chronologically per fight. The service does not cross fight boundaries — each boss pull is analysed independently.
+Hit type detection uses the WCL `hitType` field (1 = crit) to distinguish crits from regular hits. This is important because only crits add stacks to Ignite — non-crit fire hits do not contribute to Ignite and are excluded from the contributing spells list.
+
+The previous implementation (before March 2026) reconstructed "combo sequences" by tracking consecutive Ignite ticks within a 2,150 ms window per source mage. This approach was replaced because it modeled Ignite as a per-player mechanic when it is actually a shared debuff. The band-based approach is both simpler and more accurate.

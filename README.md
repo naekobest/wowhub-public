@@ -30,8 +30,8 @@ Mechanics that directly affect raid performance if missed.
 - **Armor debuff uptime**: Sunder Armor / Expose Armor coverage by tanks
 - **Boss debuffs**: Curse of Recklessness, Curse of Elements, Faerie Fire uptime
 - **Death analysis**: avoidable vs. unavoidable, per boss, per player
-- **Ignite munching**: detects dropped Ignite rolling combos for fire mages — flags cases where a mage broke the chain before the 2.15 s window elapsed
-- **Ignite griefing**: detects which mages reset another mage's active Ignite by casting their own fire spell mid-chain — per boss, with a breakdown by offender and triggering spell
+- **Ignite tracking**: per-instance Ignite breakdown using WCL debuff bands — duration, max tick, contributing spells per caster, uptime per boss. Grief data from the griefing service is displayed inline per Ignite instance with warning badges.
+- **Ignite griefing**: stack-tracking state machine detects wrong spells during build phase (< 5 stacks) and maintenance phase (5 stacks). Per-instance details in the Ignite tab, raid-wide overview in a dedicated tab.
 
 ### Preparation
 

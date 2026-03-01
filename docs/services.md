@@ -56,15 +56,13 @@ Results show which players interrupted and with which abilities (Counterspell, P
 
 **Key:** `ignite` | **Expansions:** V
 
-Ignite is the Mage talent that causes fire crits to apply a stacking DoT on the target. In Vanilla Classic, the game engine processes Ignite as a single shared debuff across all fire mages. This creates a mechanic called Ignite rolling: fire mages want to keep the debuff refreshed continuously with small spells like Scorch, allowing Fireball crits from multiple mages to stack into very large ticks without the debuff resetting the accumulation. Dropping the chain before the 2.15 second window resets the stacking value.
+Ignite is the Mage talent that causes fire crits to apply a stacking DoT on the target. In Vanilla Classic, the game engine processes Ignite as a single shared debuff across all fire mages. Every fire crit from every mage feeds into the same Ignite debuff, stacking up to 5 times. A well-coordinated mage group keeps Ignite rolling continuously with high-value Fireball crits while using Scorch only for maintenance refreshes at full stacks.
 
-The service measures two things. First, it calculates Ignite uptime as a fraction of boss fight duration using the debuff aura data from WCL. Second, it reconstructs Ignite combo sequences from raw damage events: consecutive ticks from the same mage within the 2.15 second window constitute one combo. The service records the longest combo per player per boss (duration in seconds, maximum tick value, fight offset of where it started) and aggregates to a best-combo summary across the clear.
+The service measures three things. First, Ignite uptime as a fraction of boss fight duration using the debuff aura band data from WCL. Second, a per-instance breakdown: each continuous Ignite debuff period on the boss is one Ignite instance, with duration, max tick, and all contributing spells attributed to their caster. Third, integrated grief detection: grief data from the Ignite Griefing service is displayed inline per Ignite instance, showing which spells caused grief during each specific Ignite window.
 
-Ticks below a minimum damage threshold are excluded to filter out noise from DoT clipping artifacts.
+**Why it matters:** A well-maintained Ignite is one of the highest-leverage mechanics available to a fire mage group in Vanilla. The per-instance breakdown with integrated grief context shows exactly what happened during each Ignite period without requiring manual log scrubbing.
 
-**Why it matters:** A well-maintained Ignite chain is one of the highest-leverage mechanics available to a fire mage group in Vanilla. Being able to show mages their personal best combo and where chains dropped gives concrete feedback.
-
-**WCL data used:** Debuff aura table for uptime (Tier 2), DamageDone events filtered to Ignite spell ID (Tier 3).
+**WCL data used:** Debuff aura table for uptime and Ignite windows (Tier 2), DamageDone events filtered to fire spell IDs (Tier 3).
 
 ### Dispels
 
@@ -92,15 +90,15 @@ Dispels are currently informational and do not feed into the Execution score.
 
 **Key:** `ignite_griefing` | **Expansions:** V
 
-The counterpart to Ignite tracking. Because Ignite is a shared debuff, any fire mage who lands a spell hit while another mage's Ignite is active will reset the debuff timer with their own value. If their Ignite value is lower than the existing stack, the raid loses damage. This is known as "griefing" the Ignite.
+The counterpart to Ignite tracking. Because Ignite is a shared debuff that stacks up to 5, casting the wrong spell at the wrong time wastes a stack slot (during the build phase, stacks < 5) or can only reduce Ignite value (during the maintenance phase, stacks = 5).
 
-The service detects Scorch and Fire Blast hits that landed while an Ignite window was active on the boss. These hits are the spells most likely to cause unintentional griefing when mages do not coordinate. Each instance records the spell, the damage value, the resist amount (Scorch partial resists reduce damage further), and the fight timestamp. Results are sorted by offender and summarized across the full clear.
+The service uses a stack-tracking state machine per Ignite debuff band. During the build phase, any Scorch, Fire Blast, Blast Wave, or Flamestrike hit is flagged. During maintenance, Fire Blast, Blast Wave, and Flamestrike are flagged. Fire Blast is exempted from maintenance flagging when used as a panic save (the gap since the last fire crit exceeds 2,500 ms, meaning Scorch could not have landed before Ignite expired).
 
-The service is an audit tool, not a punishment system. Many resets are intentional (a mage refreshing a dying chain). The data lets the fire group identify whether resets are concentrated on a specific player or distributed evenly, and whether the timing suggests coordination issues.
+Results are produced at two levels: a raid-wide overview in the Ignite Griefing tab (total griefs per player, per-boss breakdowns), and a per-instance view embedded in the Ignite tab via the `perIgnite` field (griefs indexed by debuff band number, shown inline alongside contributing spells).
 
-**Why it matters:** A raid with five fire mages where two are consistently resetting each other's large Fireball Ignites can lose tens of thousands of damage per boss. The service makes this visible without requiring manual log scrubbing.
+**Why it matters:** A raid with five fire mages where two are consistently casting Scorch during the build phase can lose tens of thousands of damage per boss. The per-instance integration provides full context: mage officers can see not just that a grief happened, but exactly which Ignite it affected and in what phase.
 
-**WCL data used:** Debuff aura table for Ignite windows (Tier 2), DamageDone events filtered to Scorch and Fire Blast spell IDs (Tier 3).
+**WCL data used:** Debuff aura table for Ignite windows (Tier 2), DamageDone events filtered to all tracked fire spell IDs (Tier 3).
 
 ---
 
