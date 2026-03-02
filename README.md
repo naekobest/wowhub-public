@@ -9,6 +9,8 @@ WoW Hub ingests your WarcraftLogs report and runs a structured analysis pipeline
 
 No spreadsheets. No manual log scrubbing. Submit a WCL URL, wait a few seconds, get a full breakdown.
 
+Every player gets a per-player score badge on each analysis card, graded on the same WoW quality scale. Guild leaders can see at a glance who is performing well and where the gaps are, without opening a single WCL tab.
+
 ## Why Not Just Use WarcraftLogs?
 
 WarcraftLogs is excellent for raw data: damage meters, cast timelines, event logs. What it doesn't do is tell you *what matters* and *who's responsible*. WoW Hub answers:
@@ -47,7 +49,8 @@ What players bring to the raid before the first pull.
 
 How effectively players use their toolkit during combat.
 
-- **DPS / HPS**: tracked per DPS player across three segments — trash pulls, boss fights, and full clear total; healers and tanks are excluded from DPS rankings
+- **DPS**: per-player damage per second scored against the class median within the same raid — a Mage doing well relative to other Mages scores higher than one carried by raid composition; healers and tanks excluded
+- **Healing**: per-healer HPS and overhealing scored against the class median; overhealing percentage remains a primary input to the Performance category score
 - **Damage taken**: total damage per player broken down by trash, boss, and full clear; avoidable classification planned
 - **Engineering**: Goblin Sapper, grenades, on use trinkets tracked
 - **Trinket usage**: on cooldown usage rate for major DPS/healing trinkets
@@ -75,6 +78,16 @@ Each category receives a score from 0 to 100%, then mapped to WoW's item quality
 | 95–100% | Legendary | Orange |
 
 An overall raid score is calculated from a weighted average across all four categories. The weighting is configurable per expansion, since what matters in Vanilla Classic differs from what matters in Mists of Pandaria.
+
+## Achievements
+
+45 achievements across 8 categories track your journey on the platform. Tiered achievements (I through IV) unlock progressively as you submit more reports, achieve higher scores, and explore different classes and expansions. Legendary one-time achievements reward rare milestones like a perfect raid score or being an early adopter.
+
+Pin up to 3 achievements to your public profile as a showcase. Achievement progress syncs daily.
+
+## Public Profiles
+
+Every user gets a public profile at `/u/{username}` showing their pinned achievement showcase and visible achievements. Profile visibility and achievement display are configurable in settings.
 
 ## Tech Stack
 
@@ -115,5 +128,5 @@ WoW Hub is currently in **Beta**. Classic Vanilla is the first supported expansi
 - [Analysis Services](docs/services.md): full list of implemented services with expansion support
 - [Per-Service Documentation](docs/services/index.md): technical analysis, scoring formulas, and WCL data dependencies for each service
 - [Changelog](CHANGELOG.md): development history and recent changes
-- [Roadmap](docs/roadmap.md): planned features and expansion timeline
+- [Roadmap](docs/roadmap.md): planned features, expansion timeline, and GDKP module
 - [Contributing](CONTRIBUTING.md): how to suggest features or new analysis checks

@@ -166,7 +166,7 @@ The service only runs on fights whose encounter ID is listed in the relevant enc
 
 Performance measures what happened during combat at the player level. Unlike Execution (which scores mechanic compliance) and Preparation (which scores readiness), Performance reflects how efficiently players used their toolkit over the course of the raid.
 
-DPS and HPS numbers are informational and not currently scored. The scored Performance metrics are deaths and overhealing, both of which have clear correct targets.
+The scored Performance metrics are deaths, overhealing, DPS (class median), and healing efficiency (class median).
 
 ### Death Analysis
 
@@ -186,11 +186,11 @@ Performance for the overall category is scored from avoidable deaths: 0 avoidabl
 
 **Key:** `dps` | **Expansions:** All
 
-Tracks damage per second for DPS players across three segments: trash pulls, boss fights, and full clear total. Healers and tanks are excluded from the ranking entirely. Role exclusions come from the WCL player roster, which assigns each actor a role based on their talent specialization.
+Tracks damage per second for DPS players across three segments: trash pulls, boss fights, and full clear total. Healers and tanks are excluded from the ranking entirely. Pets and NPCs are filtered using the `knownPlayerNames` set from the WCL roster. Role exclusions come from the WCL player roster, which assigns each actor a role based on their talent specialization.
 
 Each segment computes DPS per player as total damage divided by total active fight time for that segment. The trash segment aggregates all non-boss combat, the boss segment aggregates boss pulls only, and the total segment combines both. Per-boss results are also available showing DPS for each specific encounter.
 
-DPS is not currently scored (it does not feed into the Performance category score). It is provided as reference data alongside scored metrics.
+DPS is scored using a class-based median comparison model. For each player, their DPS is compared against the median DPS for their class within the same raid. This produces a 0 to 100 score that rewards players who perform well relative to their class expectations rather than penalizing players for choosing lower-DPS specs. The median threshold is configurable per expansion (`dps_median_score`). Per-player score badges using WoW quality tier colors are displayed on the result card.
 
 **WCL data used:** DamageDone table (Tier 2), with a separate trash pull pass when `needsTrashData` is declared.
 
@@ -200,7 +200,7 @@ DPS is not currently scored (it does not feed into the Performance category scor
 
 Tracks healing per second per healer with the same trash, boss, and total segmentation as DPS. Only players with the healer role assignment are included. The service also tracks overhealing percentage per healer: raw healing minus effective healing expressed as a fraction of raw.
 
-The per-fight analysis records effective HPS, raw HPS, and overhealing percentage. The raid summary aggregates this across the full clear for each segment. Overhealing percentage across all healers is the primary input to Performance scoring: a lower percentage means healers were casting efficient, reactive heals rather than blanketing the raid with unnecessary output.
+The per-fight analysis records effective HPS, raw HPS, and overhealing percentage. The raid summary aggregates this across the full clear for each segment. Overhealing percentage across all healers remains a primary input to Performance scoring. Additionally, HPS is now scored using a class-based median comparison model (identical to DPS scoring): each healer's output is compared against the median for their class within the same raid, producing a 0 to 100 score. The median threshold is configurable per expansion (`healing_median_score`). Per-player score badges are displayed on the result card.
 
 **Why it matters:** Overhealing in Classic raids is often a leading indicator of mana issues in longer fights. Healers who consistently overheal by 60% run out of mana faster and may be the reason a boss enrages.
 
@@ -264,7 +264,7 @@ Each category score is calculated from the metrics that service produced:
 
 **Preparation:** average of world buff compliance score, consumable compliance score, and gear enchant score.
 
-**Performance:** average of avoidable deaths score (inverted: 0 deaths = 100) and healer overhealing score (inverted: 0% overheal = 100).
+**Performance:** average of avoidable deaths score (inverted: 0 deaths = 100), healer overhealing score (inverted: 0% overheal = 100), DPS class median score, and healing class median score.
 
 **Buffs:** derived from average raid buff uptime across all tracked buffs, normalized against a target of 95% uptime.
 

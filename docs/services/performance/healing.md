@@ -3,7 +3,7 @@
 **Service key:** `healing`
 **Category:** Performance
 **Expansions:** All
-**Contributes to scoring:** Yes — overhealing percentage is a weighted input to the Performance category score
+**Contributes to scoring:** Yes — overhealing percentage and class-based median HPS are weighted inputs to the Performance category score
 
 ---
 
@@ -31,9 +31,11 @@ For each boss fight, the service records effective HPS, raw HPS, and overhealing
 
 ## Scoring
 
-The overhealing percentage across all healers averaged to a raid-wide value feeds the Performance category score. The score is inverted: 0% overhealing scores 100, and overhealing at the configured maximum threshold scores 0. The threshold is configurable per expansion.
+Two scoring dimensions feed the Performance category:
 
-Lower overhealing means healers were casting reactive, efficient heals rather than pre-emptively flooding the raid.
+**Overhealing score** — the overhealing percentage across all healers averaged to a raid-wide value. The score is inverted: 0% overhealing scores 100, and overhealing at the configured maximum threshold scores 0. Lower overhealing means healers were casting reactive, efficient heals rather than pre-emptively flooding the raid.
+
+**Class median score** — each healer's HPS is compared against the median HPS for their class within the same raid. This produces a 0 to 100 score per healer that reflects how well they performed relative to their class expectations. The median threshold is configurable per expansion via `healing_median_score` (default 75). Per-player score badges using WoW quality tier colors are displayed on the result card.
 
 ---
 

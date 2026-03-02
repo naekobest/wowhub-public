@@ -1,5 +1,80 @@
 # Changelog
 
+## 2026-03-02
+
+### Performance Scoring
+
+DPS and Healing services now contribute to the Performance category score. Both use a class-based median comparison model: for each player, their output (DPS or HPS) is compared against the median for their class within the same raid. This produces a 0 to 100 score that reflects how well a player performed relative to what their class is expected to deliver in that specific raid environment.
+
+The class median approach avoids punishing players for playing lower-DPS specs and avoids rewarding players for simply being in a raid with lower overall output. A Warrior doing 300 DPS in a raid where the Warrior median is 280 scores higher than a Warrior doing 350 in a raid where the Warrior median is 400.
+
+Both services declare `needsPlayers()` in their data requirements so the pipeline provides role-segmented rosters automatically. Healers and tanks remain excluded from DPS rankings. Only healers are included in Healing scoring.
+
+Pets and NPCs are now filtered from DPS and Damage Taken results using the `knownPlayerNames` set from the WCL roster. Previously, hunter pets and warlock pets could appear as separate entries in the player rankings.
+
+The Performance category in the Report Card has been updated:
+
+| Component | Weight within Performance |
+|-----------|--------------------------|
+| Avoidable deaths | Primary |
+| Overhealing | Secondary |
+| DPS (class median) | Tertiary |
+| Healing (class median) | Tertiary |
+
+DPS and Healing scoring thresholds are configurable per expansion via `dps_median_score` and `healing_median_score` in the expansion config.
+
+### Player Breakdown
+
+All analysis result components have been redesigned with a focus on per-player visibility and deeper drill-down capability.
+
+**Per-player score badges** now appear on every result card that produces player-level data. Each badge uses the same WoW quality tier color scale (Poor through Legendary) derived from the player's individual score for that metric. Score badges are visible on DPS, Healing, Deaths, Interrupts, Dispels, and Armor Debuff result cards.
+
+**Deaths** — redesigned with a per-boss accordion that is always visible (no toggle needed). Each boss section shows the full death roster with the killing ability displayed inline. The "Avoidable" section is hidden when there are zero avoidable deaths for that boss.
+
+**Damage Taken** — added a scope toggle (raid-wide vs. per-zone) and a proportional damage bar visualization. Top damage sources per boss are shown in a dedicated breakdown. Per-player rows link directly to the WCL player detail page.
+
+**Armor Debuff** — split into Sunder/Expose sub-tabs. The player leaderboard is always visible (no longer collapsed by default). Per-player uptime and score badges are shown. Fixed an issue where the CPM header was duplicated per row and zero-uptime bars were hidden.
+
+**Interrupts** — added a response rate bar visualization and interruptible cast demand tracking. The player leaderboard is always visible with a per-boss accordion breakdown.
+
+**Dispels** — same pattern as Interrupts: response rate bars, always-visible leaderboard, per-boss accordion.
+
+**DPS and Healing** — per-player score badges using the class median scoring system. Dual display of efficiency (relative to class median) and absolute values.
+
+### Achievements
+
+WoW Hub now has a hybrid achievement system inspired by WoW's own achievement UI. Achievements are tiered badges (not a point system) that unlock as users interact with the platform.
+
+**45 achievements** across 8 categories:
+
+**Upload and Analysis** (tiered I through IV) — Raid Reporter, Boss Slayer, Expansion Explorer, Raid Enthusiast, Death Chronicler, Wipe Watcher, Headcount.
+
+**Score and Quality** (tiered I through IV plus one-time legendary) — Consistent Performer, Execution Expert, Preparation Master, Performance Powerhouse, Buff Commander, Comeback King. Legendary one-time achievements: Rising Star, Purple Reign, Touched by Greatness, Perfectionist, Flawless, Unchallenged, Upward Trend.
+
+**Preparation and Dedication** (tiered I through IV) — Always Prepared, Buff Hoarder, Character Collector, Class Historian, Deathless.
+
+**Class** (tiered I through III plus one-time legendary) — Healer Soul, Tank Instinct, DPS Devotee, Spec Collector. Legendary: Purity of Purpose.
+
+**Community and Social** (tiered) — Recruiter, Guild Liaison, Realm Hopper.
+
+**Meta and Rare** (tiered I through III plus one-time legendary) — Streak, Dedicated Member. Legendary: First Blood, Early Adopter, Night Owl, Weekend Warrior, Nostalgia Trip, Zero to Hero, The Completionist.
+
+Achievement progress is synced daily via a scheduled job. Each achievement checker runs as a SQL predicate, so the sync is efficient even across large user bases. Users can pin up to 3 achievements to their public profile as a showcase. Achievement visibility can be toggled globally in appearance settings.
+
+Tier colors match WoW's item quality scale: Common, Uncommon, Rare, Epic, Legendary.
+
+### Public User Profiles
+
+Users now have a public profile page at `/u/{username}`. The profile displays the user's pinned achievement showcase (up to 3), their visible achievements grouped by category, and basic account information. Profile privacy and achievement visibility are configurable in settings.
+
+### Onboarding
+
+A guided onboarding checklist helps new users through account setup: connecting their WarcraftLogs account, submitting their first report, claiming a character, and configuring their profile. The checklist persists across sessions and dismisses automatically once all steps are completed.
+
+### UI
+
+- Deferred prop loading with skeleton states on category tab content. Switching between analysis categories (Execution, Preparation, Performance, Buffs) shows a pulsing skeleton while data loads rather than a blank page.
+
 ## 2026-03-01
 
 ### Ignite Rewrite

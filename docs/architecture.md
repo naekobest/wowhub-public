@@ -47,3 +47,21 @@ WCL report URLs contain a report code but no expansion information. The expansio
 6. Submitting reports: requires auth
 
 Personal WCL API keys (for own budget usage) are stored separately, also encrypted.
+
+## Achievement System
+
+WoW Hub tracks 45 achievements across 8 categories. Achievements are either tiered (I through IV, unlocking progressively) or one-time legendary milestones. Progress is synced daily via a scheduled job that runs SQL predicate-based threshold checks against each user's cumulative data.
+
+The system is designed for efficiency: the daily sync job evaluates all achievement checkers for all users in a single scheduled run rather than reacting to individual events. Each checker is a SQL predicate, so the sync scales with the number of users without additional API calls or complex event processing.
+
+Users can pin up to 3 unlocked achievements to their public profile as a showcase. Achievement visibility is toggleable globally in appearance settings. Tier colors match WoW's item quality scale (Common through Legendary).
+
+## Public Profiles
+
+Each user has a public profile at `/u/{username}`. The profile displays:
+
+- Pinned achievement showcase (up to 3 achievements)
+- All visible achievements grouped by category
+- Basic account information
+
+Profile visibility and achievement display are user-configurable. The profile page is publicly accessible without authentication.

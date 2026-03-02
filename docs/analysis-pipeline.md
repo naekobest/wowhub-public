@@ -84,4 +84,12 @@ Results are written once and resubmitting the same report is a no-op. The `data`
 
 Category weights are configurable per expansion. In Vanilla Classic, Preparation (world buffs, consumables) carries more weight than in later expansions where consumable culture is different.
 
+### Performance Scoring: Class-Based Medians
+
+DPS and Healing services now contribute to the Performance category score using a class-based median comparison model. For each player, their output is compared against the median for their class within the same raid. This produces a 0 to 100 score that reflects how well a player performed relative to what their class is expected to deliver in that specific environment.
+
+The class median approach avoids punishing players for playing lower-DPS specs and avoids rewarding players for simply being in a raid with lower overall output. A score of 100 means the player was at or above their class median by the configured threshold margin.
+
+Pets and NPCs are automatically filtered from rankings using the `knownPlayerNames` set derived from the WCL roster.
+
 The final score per category is mapped to WoW's item quality grades: Poor, Common, Uncommon, Rare, Epic, Legendary.

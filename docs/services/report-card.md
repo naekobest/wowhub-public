@@ -26,7 +26,7 @@ Average of debuff uptime score, armor debuff uptime score, and interrupt coverag
 Average of world buff compliance score, consumable compliance score, and gear enchant score. Frost Resistance is informational and does not contribute.
 
 **Performance (20% weight)**
-Average of avoidable deaths score (0 deaths = 100, threshold deaths = 0) and healer overhealing score (0% overheal = 100, threshold overheal = 0). DPS, HPS, and Damage Taken are informational and do not contribute.
+Average of avoidable deaths score (0 deaths = 100, threshold deaths = 0), healer overhealing score (0% overheal = 100, threshold overheal = 0), DPS class median score, and healing class median score. Damage Taken is informational and does not contribute.
 
 **Buffs (15% weight)**
 Derived from average raid buff uptime across all tracked reliable buffs, normalised against a target of 95% uptime. Player Buff Coverage is informational and does not contribute.
@@ -60,7 +60,7 @@ These thresholds use WoW's own item quality vocabulary as the grading language. 
 |----------|--------|-----------|
 | Execution | 35% | Mechanic compliance is the highest-leverage category in Classic. Dropped debuffs and missed interrupts have direct and compounding damage consequences. |
 | Preparation | 30% | In Vanilla Classic, world buffs and consumables represent a meaningful fraction of total raid DPS output. Preparation is controllable and repeatable. |
-| Performance | 20% | DPS output is a downstream result of Execution and Preparation, not an independent input. Avoidable deaths are scored here. |
+| Performance | 20% | Avoidable deaths, overhealing efficiency, and class-based median DPS/HPS scores are combined. The class median approach isolates player skill from raid composition effects. |
 | Buffs | 15% | Buff uptime in organised guilds tends to be high and has lower variance than other categories. Its weight reflects its relative importance, not its difficulty. |
 
 Weights are configurable per expansion. What matters in Vanilla Classic differs from what matters in Mists of Pandaria, where buff infrastructure and interrupts may carry different relative importance.
