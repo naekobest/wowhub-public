@@ -2,7 +2,7 @@
 
 ## Stack
 
-WoW Hub is a server rendered SPA built on **Laravel 12** (PHP 8.4) with **Inertia.js v2** and **React 19**. The backend handles all business logic, queue management, and WarcraftLogs API communication. The frontend is a TypeScript React app rendered server side via Inertia, with no separate API, no JWT, and no state management library needed.
+WarcraftPulse is a server rendered SPA built on **Laravel 12** (PHP 8.4) with **Inertia.js v2** and **React 19**. The backend handles all business logic, queue management, and WarcraftLogs API communication. The frontend is a TypeScript React app rendered server side via Inertia, with no separate API, no JWT, and no state management library needed.
 
 **Database:** PostgreSQL with LIST partitioning by game version. High-volume tables (raids, players, analysis results) are partitioned per expansion, so queries for Vanilla data never touch MoP partitions and vice versa. Analysis result rows are written once. There is no reanalysis and submitting the same report twice is a no-op.
 
@@ -23,7 +23,7 @@ Free and Premium jobs **never share workers**. A spike in free tier submissions 
 
 ## WarcraftLogs API Budget
 
-WCL's v2 API has a per hour point budget. WoW Hub manages this in three tiers:
+WCL's v2 API has a per hour point budget. WarcraftPulse manages this in three tiers:
 
 1. **User has their own WCL v2 API key**: uses their own budget, dispatched to the highest priority queue for their subscription tier
 2. **No own key, app budget available**: uses the shared app budget, normal queue priority
@@ -50,7 +50,7 @@ Personal WCL API keys (for own budget usage) are stored separately, also encrypt
 
 ## Achievement System
 
-WoW Hub tracks 45 achievements across 8 categories. Achievements are either tiered (I through IV, unlocking progressively) or one-time legendary milestones. Progress is synced daily via a scheduled job that runs SQL predicate-based threshold checks against each user's cumulative data.
+WarcraftPulse tracks 45 achievements across 8 categories. Achievements are either tiered (I through IV, unlocking progressively) or one-time legendary milestones. Progress is synced daily via a scheduled job that runs SQL predicate-based threshold checks against each user's cumulative data.
 
 The system is designed for efficiency: the daily sync job evaluates all achievement checkers for all users in a single scheduled run rather than reacting to individual events. Each checker is a SQL predicate, so the sync scales with the number of users without additional API calls or complex event processing.
 

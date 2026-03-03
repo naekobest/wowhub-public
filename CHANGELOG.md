@@ -43,7 +43,7 @@ All analysis result components have been redesigned with a focus on per-player v
 
 ### Achievements
 
-WoW Hub now has a hybrid achievement system inspired by WoW's own achievement UI. Achievements are tiered badges (not a point system) that unlock as users interact with the platform.
+WarcraftPulse now has a hybrid achievement system inspired by WoW's own achievement UI. Achievements are tiered badges (not a point system) that unlock as users interact with the platform.
 
 **45 achievements** across 8 categories:
 

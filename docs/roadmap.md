@@ -2,7 +2,7 @@
 
 ## Expansion Support
 
-Classic progression servers move forward over time and WoW Hub is designed to keep up. Each expansion requires its own set of analysis services, spell IDs, thresholds, and enabled checks.
+Classic progression servers move forward over time and WarcraftPulse is designed to keep up. Each expansion requires its own set of analysis services, spell IDs, thresholds, and enabled checks.
 
 | Expansion | Priority | Status |
 |-----------|----------|--------|

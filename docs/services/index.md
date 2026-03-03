@@ -1,6 +1,6 @@
 # Analysis Services
 
-This directory contains per-service technical documentation for every analysis service in WoW Hub.
+This directory contains per-service technical documentation for every analysis service in WarcraftPulse.
 
 For a complete overview of all services, scoring formulas, and category weights see [services.md](../services.md).
 

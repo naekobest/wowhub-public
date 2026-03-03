@@ -1,6 +1,6 @@
 # Contributing
 
-WoW Hub's source code is closed source. This repository is a public facing overview.
+WarcraftPulse's source code is closed source. This repository is a public facing overview.
 
 Community input is genuinely valuable, particularly for:
 
