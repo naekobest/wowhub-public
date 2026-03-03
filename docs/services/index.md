@@ -16,6 +16,7 @@ For a complete overview of all services, scoring formulas, and category weights 
 | [Dispels](execution/dispels.md) | `dispels` | No |
 | [Ignite](execution/ignite.md) | `ignite` | No |
 | [Ignite Griefing](execution/ignite-griefing.md) | `ignite_griefing` | No |
+| [Cooldown Usage](execution/cooldown-usage.md) | `cooldown_usage` | Yes |
 
 ## Preparation
 
@@ -32,8 +33,8 @@ For a complete overview of all services, scoring formulas, and category weights 
 |---------|-----|--------|
 | [Death Analysis](performance/deaths.md) | `deaths` | Yes |
 | [Healing Metrics](performance/healing.md) | `healing` | Yes |
-| [DPS](performance/dps.md) | `dps` | No |
-| [Damage Taken](performance/damage-taken.md) | `damage_taken` | No |
+| [DPS](performance/dps.md) | `dps` | Yes |
+| [Damage Taken](performance/damage-taken.md) | `damage_taken` | Yes |
 
 ## Buffs
 

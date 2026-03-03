@@ -53,3 +53,9 @@ In WoW Classic raid content, full Sunder Armor stacks on the main tank target re
 The effective cast filter matches only casts that landed (hit or partially resisted); misses are excluded from the CPM calculation because a missed Sunder does not refresh the debuff stack and should not count as meaningful contribution.
 
 Zone-wide uptime and CPM are computed by aggregating all per-boss results within each zone. Zone grouping only appears in the output when more than one distinct zone is present in the log.
+
+### Expose Armor drop detection
+
+When Expose Armor uptime falls below 100%, the service calculates coverage gaps per boss: number of drops, total gap duration, and longest single gap. The raid summary aggregates drop totals across all boss fights. Trash fights are excluded from raid summary drop totals to avoid noise from pull transitions.
+
+A segmented timeline bar in the frontend visualizes Expose Armor coverage per boss, highlighting gaps in red against green uptime bands.

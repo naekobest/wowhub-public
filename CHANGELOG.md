@@ -1,5 +1,70 @@
 # Changelog
 
+## 2026-03-03
+
+### Major Cooldown Usage Tracking
+
+New analysis service: `cooldown_usage` in the Execution category. Tracks class-specific major cooldowns per player per boss using WCL Cast events.
+
+Three cooldown types are distinguished:
+
+| Type | Behavior | Examples |
+|------|----------|----------|
+| Throughput | Scored (actual/expected casts * 100) | Death Wish, Adrenaline Rush, Arcane Power |
+| Utility | Tracked with cast targets | Power Infusion, Innervate, Lay on Hands |
+| Defensive | Informational only | Shield Wall, Last Stand |
+
+Talent-required cooldowns are auto-detected via a first-pass scan of the log. A cooldown is only scored if the player used it at least once during the raid, preventing false penalization of players who did not talent into it. Utility cooldowns like Power Infusion and Innervate track cast targets with self-cast detection, so raid leaders can see which player received each external cooldown.
+
+Expected cast count is derived from fight duration divided by cooldown duration. The score is `min(actual / expected, 1.0) * 100`.
+
+### Interrupt Response Rate
+
+The interrupt service now fetches interruptible casts from the WCL Cast events table for configured boss encounters. Each expansion config includes a mapping of encounter IDs to interruptible spell IDs.
+
+Two new metrics are available per boss:
+
+- **Interruptible casts**: how many casts were available to interrupt (interrupted + completed)
+- **Response rate**: `interrupted / interruptible_casts` as a percentage
+
+The frontend shows a response rate bar on boss-scoped results where all interrupts are demand-tracked. Mixed scopes (boss + trash) fall back to total interrupt count since trash interrupt windows are not configured.
+
+`demandInterrupts` is tracked separately from `totalInterrupts` to prevent count overflow when mixing boss and trash scopes.
+
+### Per-Player Damage Taken Scoring
+
+Damage Taken now contributes to the Performance score. Each non-tank player is scored relative to the raid average boss damage taken. Players who took significantly less damage than average score higher. Tanks are excluded from scoring (score = null) since their damage taken is role-inherent.
+
+The raid-wide damage taken score is the average of all non-tank player scores.
+
+### Expose Armor Drop Detection
+
+The Armor Debuff service now detects coverage gaps (drops) per boss. When Expose Armor uptime falls below 100%, the service calculates the number of gaps, total gap duration, and longest single gap per boss. The raid summary aggregates drop totals across all bosses. Trash fights are excluded from raid summary drop totals to avoid noise from pull transitions.
+
+A segmented timeline bar in the frontend visualizes Expose Armor coverage per boss, highlighting gaps in red against green uptime bands.
+
+### Major Cooldown Result Component
+
+New frontend result component for the cooldown usage service. Each player's cooldown list is displayed with actual vs. expected cast counts, a usage percentage bar, and WoW quality tier score badges. Utility cooldowns show cast target names. Defensive cooldowns are listed without scores.
+
+### Admin Log Viewer
+
+Application logs are now viewable in the admin panel. The `LogReaderService` parses PSR-3 formatted log files with support for multi-line stack traces. The admin interface provides filtering by log level, date range, and free-text search with cursor-based pagination.
+
+An Application Logs summary card on the admin index page shows recent error and warning counts.
+
+### UI
+
+- **Ctrl+J keyboard shortcut** opens the Analyze modal from anywhere in the app. The shortcut is suppressed when another dialog is open or an input element is focused. A `Ctrl+J` kbd badge is shown on the Analyze Report sidebar item.
+- **Notification bell redesign**: visible container with border and background matching the search bar style. Larger badge with soft glow animation replacing the infinite ping. Per-type colored icon backgrounds. Stronger unread/read distinction (opacity and background color). Better empty state with a BellOff icon. Hidden for guests.
+- **Early Adopter badge** now uses the achievement system instead of a hardcoded date comparison. The tier badge (Member/Premium/Premium Pro) remains independent and always visible.
+- **Onboarding fix**: step 3 "Full documentation" link no longer traps users on the onboarding page. The link now completes the onboarding step before navigating. Onboarding progress persists in sessionStorage so page navigation does not reset to step 1.
+
+### Infrastructure
+
+- **Dependabot** configured for npm and Composer dependency updates with weekly schedule.
+- Security dependency bumps: minimatch, ajv, rollup.
+
 ## 2026-03-02
 
 ### Performance Scoring

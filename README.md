@@ -34,6 +34,7 @@ Mechanics that directly affect raid performance if missed.
 - **Death analysis**: avoidable vs. unavoidable, per boss, per player
 - **Ignite tracking**: per-instance Ignite breakdown using WCL debuff bands — duration, max tick, contributing spells per caster, uptime per boss. Grief data from the griefing service is displayed inline per Ignite instance with warning badges.
 - **Ignite griefing**: stack-tracking state machine detects wrong spells during build phase (< 5 stacks) and maintenance phase (5 stacks). Per-instance details in the Ignite tab, raid-wide overview in a dedicated tab.
+- **Major cooldown usage**: per-player tracking of throughput CDs (Death Wish, Adrenaline Rush, Arcane Power), utility CDs (Power Infusion, Innervate) with cast targets, and defensive CDs. Throughput cooldowns are scored by actual vs. expected usage per boss fight.
 
 ### Preparation
 
@@ -51,7 +52,7 @@ How effectively players use their toolkit during combat.
 
 - **DPS**: per-player damage per second scored against the class median within the same raid — a Mage doing well relative to other Mages scores higher than one carried by raid composition; healers and tanks excluded
 - **Healing**: per-healer HPS and overhealing scored against the class median; overhealing percentage remains a primary input to the Performance category score
-- **Damage taken**: total damage per player broken down by trash, boss, and full clear; avoidable classification planned
+- **Damage taken**: per-player damage scored relative to raid average (tanks excluded), broken down by trash, boss, and full clear
 - **Engineering**: Goblin Sapper, grenades, on use trinkets tracked
 - **Trinket usage**: on cooldown usage rate for major DPS/healing trinkets
 - **Drums of Battle**: coverage and overlap analysis for Leatherworkers

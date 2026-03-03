@@ -3,7 +3,7 @@
 **Service key:** `damage_taken`
 **Category:** Performance
 **Expansions:** All
-**Contributes to scoring:** Informational — does not currently feed into the Performance score
+**Contributes to scoring:** Yes — per-player relative scoring feeds into the Performance category score
 
 ---
 
@@ -21,14 +21,20 @@ The service also aggregates the top damage sources raid-wide so guild leaders ca
 
 ---
 
+## Scoring
+
+Each non-tank player is scored relative to the raid average boss damage taken. Players who took less damage than average score higher; players who took more score lower. Tanks are excluded from scoring (score = null) since their damage intake is role-inherent and not comparable to DPS or healers.
+
+The raid-wide damage taken score is the average of all non-tank player scores.
+
+---
+
 ## Why it matters
 
-Damage taken by itself is not scored because a significant fraction is unavoidable for tanks and some roles. The data is useful for two separate purposes:
+Damage taken scoring surfaces players who are consistently standing in avoidable mechanics or not using defensive cooldowns, even when they survive. The deaths service catches the fatal outcome; damage taken catches the pattern before a player dies.
 
-- **Identifying standouts:** A DPS player who took significantly more damage than peers on the same boss is likely failing a personal avoidance mechanic. The deaths service classifies avoidable kills, but damage taken shows the pattern before a player dies.
+- **Identifying standouts:** A DPS player who took significantly more damage than peers on the same boss is likely failing a personal avoidance mechanic.
 - **Raid-wide source ranking:** Knowing which ability dealt the most total damage across all players helps prioritise healing assignments, defensive cooldown timing, and resist gear requirements for future progression.
-
-Avoidable vs. unavoidable classification per damage source is planned for a future update, at which point damage taken may contribute to the Performance score.
 
 ---
 

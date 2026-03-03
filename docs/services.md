@@ -44,13 +44,13 @@ The service tracks both debuffs independently, calculates uptime as a fraction o
 
 **Key:** `interrupts` | **Expansions:** All
 
-Tracks the total number of successful spell interrupts per boss fight and the breakdown by player. The service does not calculate an opportunity rate because WarcraftLogs does not expose the number of interruptible cast windows in aggregated form. Instead it normalizes the total interrupt count against a configurable target per expansion and produces a leaderboard of who is carrying interrupt responsibility.
+Tracks the total number of successful spell interrupts per boss fight and the breakdown by player. For boss encounters with configured interruptible spell IDs, the service fetches Cast events from WCL and calculates a response rate: `interrupted / interruptible_casts`. For untracked encounters (trash, unconfigured bosses), it falls back to normalizing the total interrupt count against a configurable target per expansion. Both modes produce a leaderboard of who is carrying interrupt responsibility.
 
 Results show which players interrupted and with which abilities (Counterspell, Pummel, Shield Bash, etc.), segmented by boss, trash, and total scope. The summary across all bosses ranks players by total interrupts.
 
 **Why it matters:** Some bosses have spells that must be interrupted to prevent wipes or significant healing strain. Identifying players who never interrupt is the first step toward fixing assignment coverage.
 
-**WCL data used:** Interrupt events (Tier 3).
+**WCL data used:** Interrupt events (Tier 3), Cast events for demand-tracked encounters (Tier 3).
 
 ### Ignite
 
@@ -85,6 +85,18 @@ Dispels are currently informational and do not feed into the Execution score.
 **Why it matters:** Uncleared debuffs cause damage, crowd-control, or healing drain. In fights with a high dispel requirement, identifying who is not dispelling (or which type is going unhandled) tells the raid leader whether the problem is assignment or awareness.
 
 **WCL data used:** Dispel events (Tier 3).
+
+### Cooldown Usage
+
+**Key:** `cooldown_usage` | **Expansions:** All
+
+Tracks class-specific major cooldowns per player per boss. Three cooldown types: throughput (Death Wish, Adrenaline Rush, Arcane Power — scored), utility (Power Infusion, Innervate, Lay on Hands — tracked with cast targets), and defensive (Shield Wall, Last Stand — informational only).
+
+Throughput cooldowns are scored using count-based comparison: `min(actual / expected, 1.0) * 100`, where expected casts are derived from fight duration divided by cooldown duration. Talent-required cooldowns are auto-detected — only scored if the player used them at least once during the raid. Utility cooldowns track cast targets with self-cast detection.
+
+**Why it matters:** A Warrior who never uses Death Wish on a 3-minute fight is leaving measurable damage on the table. Utility cooldown tracking answers otherwise invisible questions: which healer got Innervate, whether PI went to the right target.
+
+**WCL data used:** Cast events (Tier 3).
 
 ### Ignite Griefing
 
@@ -212,7 +224,7 @@ The per-fight analysis records effective HPS, raw HPS, and overhealing percentag
 
 Records total damage taken per player, broken down by trash, boss, and full clear. Also aggregates the top damage sources across the raid so guild leaders can see which abilities dealt the most total damage raid-wide.
 
-Damage taken is currently informational. It is not scored and does not feed into the Performance category. Avoidable vs. unavoidable classification per damage source is planned for a future update.
+Each non-tank player is scored relative to the raid average boss damage taken. Players who took less damage than average score higher. Tanks are excluded from scoring since their damage intake is role-inherent. The raid-wide damage taken score is the average of all non-tank player scores.
 
 **WCL data used:** DamageTaken table (Tier 2), with a trash data pass.
 
@@ -260,11 +272,11 @@ For each boss fight, the service finds which players appear in the buff aura dat
 
 Each category score is calculated from the metrics that service produced:
 
-**Execution:** average of debuff uptime score, armor debuff uptime score, and interrupt coverage score. Each metric is normalized to 0 to 100 against a configurable target (e.g. 95% debuff uptime = 100 score).
+**Execution:** average of debuff uptime score, armor debuff uptime score, interrupt coverage score, and cooldown usage score. Each metric is normalized to 0 to 100 against a configurable target (e.g. 95% debuff uptime = 100 score).
 
 **Preparation:** average of world buff compliance score, consumable compliance score, and gear enchant score.
 
-**Performance:** average of avoidable deaths score (inverted: 0 deaths = 100), healer overhealing score (inverted: 0% overheal = 100), DPS class median score, and healing class median score.
+**Performance:** average of avoidable deaths score (inverted: 0 deaths = 100), healer overhealing score (inverted: 0% overheal = 100), DPS class median score, healing class median score, and damage taken score (relative to raid average, tanks excluded).
 
 **Buffs:** derived from average raid buff uptime across all tracked buffs, normalized against a target of 95% uptime.
 
