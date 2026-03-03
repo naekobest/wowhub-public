@@ -1,4 +1,4 @@
-# WoW Hub
+# WarcraftPulse
 
 > Raid log analysis for WoW Classic, built for guild leads and powered by WarcraftLogs.
 
