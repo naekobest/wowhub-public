@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-03-04
+
+### Expose Armor Drop Detection: Refined Gap Analysis
+
+The Expose Armor drop detection introduced on 2026-03-03 has been refined with more accurate gap classification and scoring.
+
+**Gap filtering**: Gaps under 2 seconds are now filtered as WCL timing artifacts. Short transitions between casts produce sub-2s debuff gaps that do not represent actual Expose Armor coverage failures.
+
+**Revised severity tiers**:
+
+| Threshold | Severity | Timeline color |
+|-----------|----------|---------------|
+| 2–5 seconds | Short | Yellow |
+| 5–15 seconds | Medium | Orange |
+| Over 15 seconds | Long | Red |
+
+**Expose score**: The raid summary now includes an `exposeScore` that penalises raids proportionally to the number, duration, and severity of Expose Armor gaps across all boss fights.
+
+**"Not maintained" state**: Bosses where Expose Armor uptime is below 20% and no gap data exists are flagged as "Not maintained" rather than showing misleading gap counts.
+
+**Gap duration display**: Per-boss fallback rows now show the duration of each gap inline.
+
 ## 2026-03-03
 
 ### Major Cooldown Usage Tracking

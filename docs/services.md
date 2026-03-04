@@ -34,7 +34,7 @@ Each debuff is measured as a percentage of the fight duration it was active on t
 
 Measures Sunder Armor and Expose Armor uptime per boss. Armor debuffs reduce the target's physical damage reduction, amplifying melee and physical DPS. In Classic raid content, full Sunder stacks on the main target can represent a 15 to 30% damage increase for physical attackers depending on the boss armor value.
 
-The service tracks both debuffs independently, calculates uptime as a fraction of fight duration, and detects coverage gaps classified by severity. A gap of under 5 seconds is minor; over 10 seconds is critical. Per-player cast data is also collected: how many effective casts each tank landed and at what rate per minute, so a guild leader can see whether the coverage gap came from a single player dropping the ball or from a broader coordination failure.
+The service tracks both debuffs independently, calculates uptime as a fraction of fight duration, and detects Expose Armor coverage gaps classified by severity. Gaps under 2 seconds are filtered as WCL timing artifacts; remaining gaps are categorised as short (2–5 s), medium (5–15 s), or long (over 15 s). An expose score in the raid summary penalises the raid proportionally to drop frequency and duration. Per-player cast data is also collected: how many effective casts each tank landed and at what rate per minute, so a guild leader can see whether the coverage gap came from a single player dropping the ball or from a broader coordination failure.
 
 **Why it matters:** Warriors spend global cooldowns on Sunder. If the debuff still falls off regularly, either the tank rotation is wrong or the assignment is unclear. This service gives the data to have that conversation.
 

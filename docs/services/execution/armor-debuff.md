@@ -27,11 +27,14 @@ Uptime is normalised against a configurable target (default 95%). A 95% combined
 
 Gap severity classification:
 
-| Gap | Classification |
-|-----|---------------|
-| Under 5 seconds | Minor |
-| 5 to 10 seconds | Major |
-| Over 10 seconds | Critical |
+| Threshold | Severity |
+|-----------|----------|
+| Under 2 seconds | Filtered (WCL timing artifact) |
+| 2–5 seconds | Short |
+| 5–15 seconds | Medium |
+| Over 15 seconds | Long |
+
+Gaps under 2 seconds are silently discarded. Short cast transitions between a Rogue applying and a Warrior re-applying Expose Armor produce sub-2s debuff gaps that do not represent real coverage failures and would inflate drop counts.
 
 ---
 
@@ -58,4 +61,6 @@ Zone-wide uptime and CPM are computed by aggregating all per-boss results within
 
 When Expose Armor uptime falls below 100%, the service calculates coverage gaps per boss: number of drops, total gap duration, and longest single gap. The raid summary aggregates drop totals across all boss fights. Trash fights are excluded from raid summary drop totals to avoid noise from pull transitions.
 
-A segmented timeline bar in the frontend visualizes Expose Armor coverage per boss, highlighting gaps in red against green uptime bands.
+Gaps under 2 seconds are filtered as WCL timing artifacts before counting or scoring. Remaining gaps are classified by severity (Short / Medium / Long) and the raid summary includes an `exposeScore` that penalises the raid proportionally to their frequency and duration.
+
+A segmented timeline bar visualizes Expose Armor coverage per boss. Gap segments are color-coded by severity: yellow for short, orange for medium, red for long. Bosses with Expose Armor uptime below 20% and no gap data are flagged as "Not maintained" rather than showing empty gap counts.
