@@ -228,6 +228,18 @@ Each non-tank player is scored relative to the raid average boss damage taken. P
 
 **WCL data used:** DamageTaken table (Tier 2), with a trash data pass.
 
+### Trinket Usage
+
+**Key:** `trinket_usage` | **Expansions:** Vanilla Classic
+
+Tracks on-use trinket and racial ability activations per player per boss. Detection uses two data sources: `applybuff` events for trinkets and cast events for racial abilities. CombatantInfo gear slots 12 and 13 are additionally checked to detect trinkets that were equipped but never used — these appear with 0% efficiency and correctly reduce the player's score.
+
+Scoring: `actual_uses / expected_uses`, capped at 100%. Expected uses are derived from fight duration divided by the trinket cooldown. Racial abilities are tracked but not scored.
+
+Configured trinkets for Vanilla Classic include major DPS trinkets (Zandalarian Hero Charm, Earthstrike, Badge of the Swarmguard, Jom Gabbar, Kiss of the Spider), healer and tank trinkets, and racial abilities (Blood Fury, Berserking).
+
+**WCL data used:** Buffs aura table for trinket buff detection (Tier 2), Cast events for racials (Tier 3), CombatantInfo for equipped-but-unused detection (Tier 2).
+
 ---
 
 ## Buffs
