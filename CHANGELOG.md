@@ -6,6 +6,96 @@
 
 WarcraftPulse is now the official app name. The name is read from `VITE_APP_NAME` instead of being hardcoded throughout the frontend — self-hosted instances can configure the name without code changes.
 
+### Email/Password Authentication
+
+Users can now register and log in with an email address and password, in addition to WarcraftLogs OAuth.
+
+- Registration with display name, email, and password
+- Forgot password / reset password flow via email link
+- Email verification required before submitting reports or configuring an API key; WCL-only users (no email) are treated as verified and never blocked
+- **Set password** for existing WCL-only accounts — adds a password to an account that was created via WarcraftLogs OAuth without requiring a new account
+- **Change email** in profile settings — triggers re-verification when the email changes
+- Login page treats email as the primary method and WCL OAuth as secondary
+
+### Player Comparison
+
+A new comparison page at `/compare` lets you compare multiple players side by side across any combination of reports.
+
+Players can be added from the report player table via checkboxes, or searched directly from the comparison page. The unified comparison table shows category scores and performance sub-scores for premium users, and highlights each player's personal best category per column.
+
+### Battle.net Integration
+
+Accounts can now be linked to Battle.net at **Settings → Linked Accounts**.
+
+- **Gear and talent sync** runs automatically after each analysis — fetches equipped items and talent selections per character from the Blizzard API
+- **Character verification** matches characters from WCL logs against Battle.net profiles; verified characters receive a badge
+- **Classic Era support** — Season of Discovery and progression realms use the `profile-classic1x` namespace; characters appearing in both namespaces are deduplicated
+- **BNet-only characters** appear on the character list with a "Not in any log yet" badge, created when a character is found on Battle.net but has not yet appeared in any submitted log
+- Localized spell and encounter names are pre-populated via a warm-cache job after each analysis
+
+### Consumables: Suboptimal Flagging and Temp Weapon Enchants
+
+The consumable check now distinguishes between missing consumables and suboptimal ones.
+
+**Suboptimal flagging**: Consumables that are present but not the best available option (e.g. lesser elixirs) are flagged separately and weighted at 0.5 in scoring. The boss breakdown marks suboptimal players with a `~` prefix in class color.
+
+**Temporary weapon enchants**: The service now detects whether melee players applied a temporary weapon enchant (e.g. Weightstone, Windfury Totem, Poisons) per boss fight. Rogue Deadly Poison application events are used as a fallback when gear slot data is unavailable. Unenchanted weapons are flagged and reduce the player's score.
+
+### Active Time Tracking
+
+New analysis service: `active_time` in the Performance category. Tracks the percentage of fight time each player was actively dealing damage or healing.
+
+- Per-player active% for boss and trash segments
+- Sourced from `activeTime` on DamageDone and HealingDone table entries — max of both sources per player so healers are not undercounted
+- Raid summary shows average boss active% and the least-active player
+
+### Engineering Usage Tracking
+
+New analysis service: `engineering_usage` in the Execution category. Tracks the use of engineering explosives (Sapper Charges, Goblin Sapper) and other consumable gadgets per player per boss. Available for Vanilla Classic and Season of Discovery.
+
+### Class Cooldown Evaluation: Enhanced Scoring
+
+The cooldown service now scores along three dimensions:
+
+| Component | Weight | Description |
+|-----------|--------|-------------|
+| Efficiency | 40% | Actual uses vs expected uses based on fight duration |
+| Timing | 40% | Average delay between the optimal cast window opening and the actual cast |
+| Effectiveness | 20% | DPS delta during the cooldown window vs baseline |
+
+Results include a composite **CD Performance Score** per player per boss and a Players × Bosses heatmap for quick raid-wide assessment. Utility cooldowns (Power Infusion, Innervate) and defensive cooldowns are tracked informally without scoring.
+
+### German Translations
+
+The full app UI is now available in German (Deutsch).
+
+Language preference is stored per user when authenticated, or in a cookie for guests, and resolved from the `Accept-Language` header as a fallback. A language selector has been added to the Appearance settings page. Boss names are localized on report pages when German is the active language. All pages and navigation components are translated: auth flows, report sections, admin pages, profile, settings, changelog, and result components.
+
+### Ignite Improvements
+
+Several accuracy improvements to the Ignite analysis service:
+
+- **Phase gates**: Uptime is now normalized for bosses with immune phases (Gothik the Harvester, Sapphiron). Invulnerable windows are subtracted from expected uptime so coverage is not penalized for time the boss cannot be targeted
+- **Individual crits**: The contributing spells table now shows individual crit events per player and spell instead of grouped totals, including the precise damage value for each crit
+- **Stack builders vs extending**: Contributing crits are split into two categories — the 5 founding crits that built the Ignite stack, and subsequent crits that extended it
+
+### Soft-Delete Accounts
+
+User accounts are now soft-deleted instead of permanently removed on deletion.
+
+- Deleted accounts are permanently purged after 30 days via a scheduled command
+- Admins can filter deleted users in the admin panel and restore or force-delete individual accounts
+- An in-app notification is sent to all admins when a user deletes their account
+- Changelog entries and WCL API keys follow the same soft-delete pattern
+
+### Debuff Tracking Fix
+
+All ranks of tracked debuffs are now correctly matched. Previously, only the highest rank was tracked — lower ranks (e.g. Sunder Armor Ranks 1–4 applied during early fight phases) were silently ignored. Coverage is no longer underreported during the ramp-up phase at the start of a boss encounter.
+
+### Analysis Progress: Fetching Data Status
+
+An indeterminate progress bar is now shown during the WCL data fetch phase of analysis. The status label reads "Fetching data" while the pipeline is hydrating the report context, giving clearer visual feedback before result processing begins.
+
 ## 2026-03-05
 
 ### Changelog
