@@ -19,7 +19,7 @@ A summary showing total grief count per player across all bosses, with per-boss 
 
 ### Per-instance detail (embedded in Ignite tab)
 
-Since March 2026, grief data is indexed by Ignite debuff band number via the `perIgnite` field. Each Ignite instance card in the Ignite view displays a warning badge with the grief count and an expandable section showing every grief event in context alongside the contributing spells.
+Grief data is indexed by Ignite debuff band number via the `perIgnite` field. Each Ignite instance card in the Ignite view displays a warning badge with the grief count and an expandable section showing every grief event in context alongside the contributing spells.
 
 ---
 
@@ -27,13 +27,35 @@ Since March 2026, grief data is indexed by Ignite debuff band number via the `pe
 
 The service uses a stack-tracking state machine to model the Ignite state per boss fight.
 
-**Phase tracking:** Events within an active Ignite debuff band are processed chronologically. The first fire crit in the band creates the Ignite (stack count 1) and is never flagged. Subsequent crits from any source increment the stack (capped at 5).
+### Phase classification
 
-**Build phase (stacks 1 through 4):** Any Scorch, Fire Blast, Blast Wave, or Flamestrike hit during stack accumulation is flagged as a grief — the cast decision was wrong regardless of whether it crit. The correct play during the build phase is to cast only Fireball or Pyroblast.
+Ignite windows are classified into two phases before grief detection begins:
 
-**Maintenance phase (5 stacks):** Fireball and Scorch are correct maintenance spells. Fire Blast, Blast Wave, and Flamestrike are flagged unconditionally because they can only reduce Ignite damage at full stacks.
+**Opener windows** occur before Fire Vulnerability (Fire Vulnerability, spell 22959) reaches 5 stacks on the target. The 5-stack threshold is detected by counting Scorch hits — each Scorch hit applies one FV stack. Grief detection is skipped entirely for opener windows. The cast sequence during FV ramp-up is governed by different rules and should not be flagged.
 
-**Fire Blast save exemption:** Fire Blast in maintenance phase is exempted when the gap since the last fire crit exceeds 2,500 ms. This threshold is derived from the 4,000 ms Ignite duration minus Scorch's 1,500 ms cast time. If a Scorch could not have landed before Ignite expired, a Fire Blast to save the chain is the correct play and is not flagged.
+**Real windows** occur after FV reaches 5 stacks. Only real windows are subject to grief analysis.
+
+### Build phase (stacks 1 through 4)
+
+Any Scorch, Fire Blast, Blast Wave, or Flamestrike hit during stack accumulation is flagged as a grief — the cast decision was wrong regardless of whether it crit. The correct play during the build phase is to cast only Fireball or Pyroblast.
+
+### Maintenance phase (5 stacks)
+
+**Fireball and Pyroblast** are only flagged when they occur more than 3 seconds after the 5-stack was reached within that window. An early Fireball to continue the chain immediately after reaching 5 stacks is still valid play and is not flagged.
+
+**Fire Blast** is never flagged at 5 stacks. Fire Blast is always an acceptable maintenance helper or panic save at full stacks — it cannot reduce Ignite value when stacks are already maxed.
+
+**Blast Wave and Flamestrike** are flagged unconditionally because they can only reduce Ignite damage at full stacks.
+
+**Fire Blast save exemption (build phase):** During the build phase, Fire Blast in maintenance phase is additionally exempted when the gap since the last fire crit exceeds 2,500 ms. If a Scorch could not have landed before Ignite expired, a Fire Blast to save the chain is correct play.
+
+### CD tracking
+
+Each contributing spell in the Ignite tab displays colored status dots indicating which cooldowns were active at the time of the crit: Combustion, spell power trinkets (Warmth of Forgiveness / Mind Quickening Gem), or Power Infusion. This gives mage officers full context for evaluating the value of each Ignite window and whether CDs were stacked correctly.
+
+### Talent check
+
+The service reads CombatantInfo data to detect whether a fire mage has the Incinerate talent. A missing-talent warning is surfaced in the result for fire mages who lack it, since Incinerate is required for optimal Scorch sequence length.
 
 ---
 
@@ -51,6 +73,8 @@ This is an audit tool, not a blame system. Many casts are situationally correct 
 
 - Debuff aura table for Ignite windows (Tier 2) — time bands when Ignite was active on the target. Each band is processed independently.
 - DamageDone events filtered to all tracked fire spell IDs (Tier 3) — individual hits with timestamps, source player, spell ID, damage, and hit type (crit vs. hit).
+- Buff aura data for CD detection (Tier 2) — active Combustion, trinket, and Power Infusion buffs per player.
+- CombatantInfo for talent detection (Tier 2) — equipped talents per player at fight start.
 
 ---
 
@@ -58,6 +82,8 @@ This is an audit tool, not a blame system. Many casts are situationally correct 
 
 The tracked spell set is configurable per expansion: Pyroblast, Fireball, Scorch, Fire Blast, Blast Wave, and Flamestrike. Each spell ID is classified into a category. The spell map is built lazily on first use and cached for the lifetime of the service instance.
 
-The `perIgnite` field indexes griefs by the zero-based debuff band number, matching the Ignite service's band order. Each entry contains `griefCount` and a `griefs` array with spell name, player name, damage, resisted amount, fight offset, and phase type. Internal fields used during processing (`bandIndex`, `playerName` on the player-level grief list) are stripped before output to keep the public API clean.
+The `perIgnite` field indexes griefs by the zero-based debuff band number, matching the Ignite service's band order. Each entry contains `griefCount` and a `griefs` array with spell name, player name, damage, resisted amount, fight offset, and phase type. Internal fields used during processing are stripped before output to keep the public API clean.
 
 Scorch partial resists are recorded in the `resisted` field on each grief entry. Resisted damage reduces the effective Ignite value placed on the target, making Scorch resets potentially even more damaging than the raw damage figure suggests.
+
+Fire Vulnerability stacks are detected by counting Scorch DamageDone hits rather than debuff stack events, because WCL does not produce `applydebuffstack` events for Fire Vulnerability (spell 22959) in all log formats.
