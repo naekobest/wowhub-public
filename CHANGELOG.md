@@ -1,5 +1,61 @@
 # Changelog
 
+## 2026-03-06
+
+### App Name
+
+WarcraftPulse is now the official app name. The name is read from `VITE_APP_NAME` instead of being hardcoded throughout the frontend — self-hosted instances can configure the name without code changes.
+
+## 2026-03-05
+
+### Changelog
+
+A public changelog is now available at `/changelog`. Published entries are listed in a two-panel index view. Each entry has its own detail page with GitHub-style Markdown rendering, including table support.
+
+Admin UI: create, edit, and publish changelog entries. A publish action fans out notifications to all users. Notification links point directly to the relevant entry. Published entries can now be edited without unpublishing first.
+
+A Changelog link has been added to the sidebar navigation.
+
+### Public Profile URLs: Sequential Numbers
+
+Public profile URLs have changed from `/u/{username}` to `/u/{number}`. Each user is assigned a sequential profile number at account creation. Existing users were backfilled in signup order. The new format is opaque — it does not expose usernames in the URL.
+
+### Gear Check: Boss-Context Warnings
+
+The Gear Enchant service now detects items that are counterproductive for a specific boss encounter. The initial implementation targets undead-slaying items: weapons, temporary enchants, and permanent enchants that only deal bonus damage to undead targets. These are detected on Grand Widow Faerlina and Maexxna, which are not undead and receive no benefit from these items.
+
+Per-boss context warnings appear in the Gear Enchant section when a player has an undead-slaying item equipped during a fight where it provides no bonus.
+
+### Frost Resistance: Enchants, Per-Slot Breakdown, Role Thresholds, Kel'Thuzad
+
+The Frost Resistance service now tracks enchant-based resistance alongside item stats. The per-slot breakdown in the result shows item and enchant contributions separately, so it is clear whether a player's FR comes from dedicated resist gear or enchants.
+
+Resistance targets are now role-based: melee classes target 80 FR, ranged classes (Mage, Warlock, Hunter, Priest) target 100 FR. The previous flat target of 120 over-penalized melee and under-penalized ranged.
+
+Kel'Thuzad has been added as a resistance check encounter alongside Sapphiron.
+
+### Ignite Griefing: Phase Classification, CD Tracking, Talent Check
+
+The Ignite Griefing service has been substantially overhauled.
+
+**Phase classification:** Ignite windows are now classified as opener (before Fire Vulnerability reaches 5 stacks) or real (after 5 stacks). Grief detection is skipped for opener windows — the early cast sequence during FV ramp-up follows different rules and should not generate false grief flags.
+
+**Revised maintenance rules:** Fire Blast is no longer flagged as a grief at 5 stacks. At full stacks, Fire Blast is always a valid maintenance helper or panic save. Fireball and Pyroblast are only flagged when they occur more than 3 seconds after the 5-stack was reached within that window.
+
+**CD tracking:** Each contributing spell in the Ignite tab now shows colored status dots indicating whether Combustion, a spell power trinket (Warmth of Forgiveness, MQG), or Power Infusion was active at the time of the crit.
+
+**Talent check:** The service reads CombatantInfo data to detect whether a mage has the Incinerate talent. A missing-talent warning is surfaced in the result for fire mages who lack it.
+
+### Trinket Usage Tracking
+
+New analysis service: `trinket_usage` in the Performance category. Tracks on-use trinket and racial ability activations per player per boss.
+
+Detection uses two data sources: `applybuff` events for trinkets and cast events for racial abilities. CombatantInfo gear slots 12 and 13 are checked to detect trinkets that were equipped but never used — these appear with 0% efficiency and correctly reduce the player's score.
+
+Scoring: `actual_uses / expected_uses`, capped at 100%. Expected uses are derived from fight duration divided by the trinket cooldown. Racials are tracked but not scored.
+
+Configured trinkets for Vanilla Classic include major DPS trinkets (Zandalarian Hero Charm, Earthstrike, Badge of the Swarmguard, Jom Gabbar, Kiss of the Spider), healer and tank trinkets, and racial abilities (Blood Fury, Berserking).
+
 ## 2026-03-04
 
 ### Expose Armor Drop Detection: Refined Gap Analysis
@@ -152,7 +208,7 @@ Tier colors match WoW's item quality scale: Common, Uncommon, Rare, Epic, Legend
 
 ### Public User Profiles
 
-Users now have a public profile page at `/u/{username}`. The profile displays the user's pinned achievement showcase (up to 3), their visible achievements grouped by category, and basic account information. Profile privacy and achievement visibility are configurable in settings.
+Users now have a public profile page at `/u/{number}`. The profile displays the user's pinned achievement showcase (up to 3), their visible achievements grouped by category, and basic account information. Profile privacy and achievement visibility are configurable in settings.
 
 ### Onboarding
 
@@ -168,7 +224,7 @@ A guided onboarding checklist helps new users through account setup: connecting 
 
 The Ignite analysis service has been completely rewritten. The previous implementation reconstructed "combo sequences" by tracking consecutive Ignite ticks within a 2,150 ms window per source mage. The new implementation uses the WCL debuff aura band data directly: each continuous Ignite debuff period on the boss is one Ignite instance, and contributing spells are matched to each instance by timestamp overlap.
 
-This is a more accurate model. Ignite in Vanilla Classic is a shared debuff, so tracking it per source mage was misleading. The new approach tracks the debuff itself and attributes all fire crits that landed during each Ignite window, regardless of which mage cast them.
+This is a more accurate model. Ignite in Vanilla Classic is a single shared debuff across all fire mages. Every fire crit from every mage feeds into the same Ignite debuff, stacking up to 5 times. A well-coordinated mage group keeps Ignite rolling continuously with high-value Fireball crits while using Scorch only for maintenance refreshes at full stacks.
 
 Per-instance data now includes:
 - Duration and time range within the fight
