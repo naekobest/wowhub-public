@@ -35,6 +35,7 @@ For a complete overview of all services, scoring formulas, and category weights 
 | [Healing Metrics](performance/healing.md) | `healing` | Yes |
 | [DPS](performance/dps.md) | `dps` | Yes |
 | [Damage Taken](performance/damage-taken.md) | `damage_taken` | Yes |
+| [Trinket Usage](performance/trinket-usage.md) | `trinket_usage` | Yes |
 
 ## Buffs
 
